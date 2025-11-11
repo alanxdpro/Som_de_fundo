@@ -34,7 +34,7 @@ ENV/
 config.json
 
 # Executáveis
-*.exe
+*.ex
 *.spec
 build/
 dist/
