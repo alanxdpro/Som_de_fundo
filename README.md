@@ -2,7 +2,7 @@
 
 Um aplicativo simples para tocar sons de fundo personalizáveis, desenvolvido com Python e CustomTkinter.
 
-🔊 **Baixe o som de fundo (32 MB):**  
+🔊 **Baixe o som de fundo (32 MB)Nova Versão:**  
 [📥 Clique aqui para baixar](https://drive.google.com/file/d/1rO-22uEjcUjhtLAQ94sp_NV64Xvn9Jjb/view?usp=sharing)
 
 ## 🚀 Recursos
