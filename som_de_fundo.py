@@ -98,6 +98,18 @@ os.makedirs(ICONS_DIR, exist_ok=True)
 os.makedirs(PLAYLISTS_DIR, exist_ok=True)
 pygame.mixer.init()
 
+def carregar_icone(nome_arquivo, tamanho=(20, 20)):
+    """Carrega um ícone da pasta icons e redimensiona se necessário"""
+    try:
+        caminho = os.path.join(ICONS_DIR, nome_arquivo)
+        if os.path.exists(caminho):
+            img = Image.open(caminho)
+            img = img.resize(tamanho, Image.Resampling.LANCZOS)
+            return ImageTk.PhotoImage(img)
+    except:
+        pass
+    return None
+
 config = {}
 current_index = None
 is_switching = threading.Lock()
@@ -416,6 +428,14 @@ ctk.set_default_color_theme("blue")
 app = ctk.CTk()
 app.title("Som de Fundo — Console Profissional")
 app.geometry("1100x650")
+
+# Definir ícone da janela
+try:
+    icon_path = os.path.join(ICONS_DIR, "app_icon.png")
+    if os.path.exists(icon_path):
+        app.iconbitmap(icon_path)
+except:
+    pass  # Se não conseguir carregar o ícone, continua sem ele
 
 carregar_config()
 button_refs = []
@@ -744,12 +764,40 @@ footer.pack(pady=15, fill="x", padx=10)
 buttons_frame = ctk.CTkFrame(footer, fg_color="transparent")
 buttons_frame.pack(side="left")
 
-ctk.CTkButton(buttons_frame, text="⏹️ Parar", fg_color="#e74c3c", hover_color="#c0392b", 
-              command=parar_tudo).pack(side="left", padx=5)
-ctk.CTkButton(buttons_frame, text="⏯️ Pausar/Retomar", fg_color="#f39c12", hover_color="#d35400", 
-              command=pausar_retomar).pack(side="left", padx=5)
-ctk.CTkButton(buttons_frame, text="⚙️ Configurar", fg_color="#2563eb", hover_color="#1d4ed8", 
-              command=abrir_config_janela).pack(side="left", padx=5)
+# Carregar ícones para os botões
+icon_stop = carregar_icone("stop.png", (16, 16))
+icon_pause = carregar_icone("pause.png", (16, 16))
+icon_config = carregar_icone("config.png", (16, 16))
+
+# Botão Parar com ícone
+if icon_stop:
+    btn_stop = ctk.CTkButton(buttons_frame, text=" Parar", image=icon_stop, 
+                           fg_color="#e74c3c", hover_color="#c0392b", 
+                           command=parar_tudo)
+else:
+    btn_stop = ctk.CTkButton(buttons_frame, text="⏹️ Parar", fg_color="#e74c3c", hover_color="#c0392b", 
+                           command=parar_tudo)
+btn_stop.pack(side="left", padx=5)
+
+# Botão Pausar/Retomar com ícone
+if icon_pause:
+    btn_pause = ctk.CTkButton(buttons_frame, text=" Pausar/Retomar", image=icon_pause,
+                            fg_color="#f39c12", hover_color="#d35400", 
+                            command=pausar_retomar)
+else:
+    btn_pause = ctk.CTkButton(buttons_frame, text="⏯️ Pausar/Retomar", fg_color="#f39c12", hover_color="#d35400", 
+                            command=pausar_retomar)
+btn_pause.pack(side="left", padx=5)
+
+# Botão Configurar com ícone
+if icon_config:
+    btn_config = ctk.CTkButton(buttons_frame, text=" Configurar", image=icon_config,
+                              fg_color="#2563eb", hover_color="#1d4ed8", 
+                              command=abrir_config_janela)
+else:
+    btn_config = ctk.CTkButton(buttons_frame, text="⚙️ Configurar", fg_color="#2563eb", hover_color="#1d4ed8", 
+                              command=abrir_config_janela)
+btn_config.pack(side="left", padx=5)
 
 sobre_frame = ctk.CTkFrame(footer, fg_color="transparent")
 sobre_frame.pack(side="right")
