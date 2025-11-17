@@ -134,6 +134,7 @@ def default_config():
         "atalhos_habilitados": True,
         "fade_in_ms": 800,
         "fade_out_ms": 800,
+        "repeticao_habilitada": False,
         "master_volume": 1.0
     }
 
@@ -157,6 +158,9 @@ def carregar_config():
             changed = True
         if "fade_out_ms" not in config:
             config["fade_out_ms"] = 800
+            changed = True
+        if "repeticao_habilitada" not in config:
+            config["repeticao_habilitada"] = False
             changed = True
         if "master_volume" not in config:
             config["master_volume"] = 1.0
@@ -249,7 +253,10 @@ def _play_file_loop(path, volume):
         pygame.mixer.music.load(path)
         volume_final = volume * master_volume
         pygame.mixer.music.set_volume(volume_final)
-        pygame.mixer.music.play(-1, fade_ms=config.get("fade_in_ms", FADE_MS))
+        # Decidir se deve repetir baseado na configuração
+        repetir = config.get("repeticao_habilitada", False)
+        loops = -1 if repetir else 0
+        pygame.mixer.music.play(loops=loops, fade_ms=config.get("fade_in_ms", FADE_MS))
         is_paused = False
     except Exception as e:
         messagebox.showerror("Erro de áudio", f"Falha ao tocar: {e}")
@@ -366,8 +373,10 @@ def pausar_retomar():
             pygame.mixer.music.set_volume(0)
             
             posicao_segundos = pause_time if pause_time is not None else 0
-            
-            pygame.mixer.music.play(-1, start=posicao_segundos)
+            # Respeitar configuração de repetição ao retomar
+            repetir = config.get("repeticao_habilitada", False)
+            loops = -1 if repetir else 0
+            pygame.mixer.music.play(loops=loops, start=posicao_segundos)
             
             is_paused = False
             music_start_time = time.time() - posicao_segundos
@@ -656,6 +665,17 @@ def abrir_config_janela():
     fade_out_entry.insert(0, str(config.get("fade_out_ms", 800)))
     fade_out_entry.pack(side="left")
 
+    # Opção de repetição do áudio (logo após Fade)
+    repeticao_frame = ctk.CTkFrame(fade_frame, fg_color="transparent")
+    repeticao_frame.pack(fill="x", padx=10, pady=(6, 6))
+    ctk.CTkLabel(repeticao_frame, text="🔁 Repetição:", width=120).pack(side="left")
+    repeticao_var = ctk.BooleanVar(value=config.get("repeticao_habilitada", False))
+    repeticao_checkbox = ctk.CTkCheckBox(repeticao_frame, 
+                                         text="Habilitar repetição do áudio (loop)",
+                                         variable=repeticao_var,
+                                         font=("Arial", 12))
+    repeticao_checkbox.pack(side="left", padx=8)
+
     ctk.CTkLabel(canvas, text="🎚️ Configuração dos Botões", font=("Arial", 16, "bold")).pack(anchor="w", pady=(15, 5), padx=10)
 
     for i, b in enumerate(config["botoes"]):
@@ -738,6 +758,8 @@ def abrir_config_janela():
             return
         
         config["atalhos_habilitados"] = atalhos_var.get()
+        # Salvar opção de repetição
+        config["repeticao_habilitada"] = repeticao_var.get()
         
         salvar_config()
         atualizar_estilos()
