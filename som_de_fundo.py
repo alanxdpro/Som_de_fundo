@@ -403,6 +403,16 @@ def parar_tudo():
     current_index = None
     atualizar_estilos()
 
+def reiniciar_musica():
+    global current_index, music_start_time
+    if current_index is not None and pygame.mixer.music.get_busy():
+        volume = config["botoes"][current_index].get("volume", 1.0)
+        threading.Thread(
+            target=_switch_music_thread, 
+            args=(current_index, config["botoes"][current_index]["arquivo"], volume), 
+            daemon=True
+        ).start()
+
 def atualizar_volume_individual(index, volume):
     config["botoes"][index]["volume"] = volume
     if current_index == index and pygame.mixer.music.get_busy():
@@ -856,6 +866,9 @@ def on_key(event):
             tocar_som(index)
     elif event.keysym == 'space':
         parar_tudo()
+    elif event.char.lower() == 'r':
+        reiniciar_musica()
+
 app.bind("<Key>", on_key)
 
 app.protocol("WM_DELETE_WINDOW", lambda: (pygame.mixer.music.stop(), app.destroy()))
