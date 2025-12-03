@@ -318,7 +318,7 @@ def formatar_tempo(segundos):
     return f"{minutos:02d}:{segundos:02d}"
 
 def atualizar_timer():
-    global music_start_time, timer_label
+    global music_start_time, timer_label, progressBar_musica
     if music_start_time and pygame.mixer.music.get_busy():
         elapsed = int(time.time() - music_start_time)
         
@@ -337,10 +337,11 @@ def atualizar_timer():
             tempo_total = formatar_tempo(duracao_total) if duracao_total > 0 else "--:--"
             
             timer_label.configure(text=f" {nome_musica} | {tempo_atual} / {tempo_total}")
-        
+            progressBar_musica.set(elapsed/duracao_total)
+
         app.after(1000, atualizar_timer)
     elif timer_label:
-        timer_label.configure(text="")
+        timer_label.configure(text="00:00 / 00:00")
 
 def fade_in(step=0.0):
     if not is_paused and current_index is not None and pygame.mixer.music.get_busy():
@@ -399,9 +400,19 @@ def parar_tudo():
         is_paused = False
     music_start_time = None
     if timer_label:
-        timer_label.configure(text="")
+        timer_label.configure(text="00:00 / 00:00")
     current_index = None
     atualizar_estilos()
+
+def reiniciar_musica():
+    global current_index, music_start_time
+    if current_index is not None and pygame.mixer.music.get_busy():
+        volume = config["botoes"][current_index].get("volume", 1.0)
+        threading.Thread(
+            target=_switch_music_thread, 
+            args=(current_index, config["botoes"][current_index]["arquivo"], volume), 
+            daemon=True
+        ).start()
 
 def atualizar_volume_individual(index, volume):
     config["botoes"][index]["volume"] = volume
@@ -456,8 +467,15 @@ header_frame.pack(pady=20, fill="x", padx=20)
 header = ctk.CTkLabel(header_frame, text="🎚️ SOM DE FUNDO PRO", font=("Arial Rounded MT Bold", 26))
 header.pack(side="left", expand=True)
 
-timer_label = ctk.CTkLabel(header_frame, text="", font=("Arial", 12), text_color="#9ca3af", anchor="e")
-timer_label.pack(side="right", padx=20, pady=5)
+musica_frame = ctk.CTkFrame(header_frame, fg_color="transparent")
+musica_frame.pack(side="right", expand=True)
+
+timer_label = ctk.CTkLabel(musica_frame, text="00:00 / 00:00", font=("Arial", 12), text_color="#9ca3af", anchor="e")
+timer_label.pack(side="top", padx=20, pady=5)
+
+progressBar_musica = ctk.CTkProgressBar(musica_frame, width=200)
+progressBar_musica.pack(side="bottom", pady=10, padx=10)
+progressBar_musica.set(0)
 
 playlist_frame = ctk.CTkFrame(app, fg_color="#1e293b", height=50)
 playlist_frame.pack(fill="x", padx=20, pady=(0, 10))
@@ -856,6 +874,9 @@ def on_key(event):
             tocar_som(index)
     elif event.keysym == 'space':
         parar_tudo()
+    elif event.char.lower() == 'r':
+        reiniciar_musica()
+
 app.bind("<Key>", on_key)
 
 app.protocol("WM_DELETE_WINDOW", lambda: (pygame.mixer.music.stop(), app.destroy()))
