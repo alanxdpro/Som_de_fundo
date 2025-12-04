@@ -3,6 +3,7 @@ import pygame
 import customtkinter as ctk
 from tkinter import filedialog, colorchooser, messagebox, simpledialog
 from PIL import Image, ImageTk
+from tela_atalhos import abrir_tela_atalhos
 
 def mostrar_sobre():
     sobre_janela = ctk.CTkToplevel()
@@ -115,6 +116,7 @@ current_index = None
 is_switching = threading.Lock()
 music_start_time = None
 timer_label = None
+last_timer_text = "00:00 / 00:00"
 is_paused = False
 pause_time = 0
 master_volume = 1.0
@@ -215,11 +217,9 @@ def alternar_playlist(direction):
     indice_playlist_atual = playlists.index(current_playlist)
 
     if direction == 0:
-        print("Voltando à playlist anterior")
         if indice_playlist_atual == 0:
             return
         else:
-            print("Voltando à playlist próxima")
             trocar_playlist(playlists[indice_playlist_atual -1], suprimir_mensagem=True)
             return
 
@@ -347,7 +347,7 @@ def formatar_tempo(segundos):
     return f"{minutos:02d}:{segundos:02d}"
 
 def atualizar_timer():
-    global music_start_time, timer_label, progressBar_musica
+    global music_start_time, timer_label, progressBar_musica, last_timer_text
     if music_start_time and pygame.mixer.music.get_busy():
         elapsed = int(time.time() - music_start_time)
         
@@ -365,12 +365,12 @@ def atualizar_timer():
             tempo_atual = formatar_tempo(elapsed)
             tempo_total = formatar_tempo(duracao_total) if duracao_total > 0 else "--:--"
             
-            timer_label.configure(text=f" {nome_musica} | {tempo_atual} / {tempo_total}")
+            novo_texto = f" {nome_musica} | {tempo_atual} / {tempo_total}"
+            last_timer_text = novo_texto
+            timer_label.configure(text=novo_texto)
             progressBar_musica.set(elapsed/duracao_total)
 
         app.after(1000, atualizar_timer)
-    elif timer_label:
-        timer_label.configure(text="00:00 / 00:00")
 
 def fade_in(step=0.0):
     if not is_paused and current_index is not None and pygame.mixer.music.get_busy():
@@ -422,7 +422,7 @@ def pausar_retomar():
     atualizar_estilos()
 
 def parar_tudo():
-    global current_index, music_start_time, is_paused
+    global current_index, music_start_time, is_paused, last_timer_text
     if pygame.mixer.music.get_busy() or is_paused:
         fade_out_time = 500
         pygame.mixer.music.fadeout(fade_out_time)
@@ -430,6 +430,7 @@ def parar_tudo():
     music_start_time = None
     if timer_label:
         timer_label.configure(text="00:00 / 00:00")
+        last_timer_text = "00:00 / 00:00"
     current_index = None
     atualizar_estilos()
 
@@ -689,15 +690,18 @@ def abrir_config_janela():
     atalhos_frame = ctk.CTkFrame(canvas, corner_radius=12, fg_color="#1e293b")
     atalhos_frame.pack(pady=8, padx=10, fill="x")
     
-    ctk.CTkLabel(atalhos_frame, text="⌨️ Atalhos de Teclado", font=("Arial", 16, "bold")).pack(anchor="w", pady=4, padx=8)
+    ctk.CTkLabel(atalhos_frame, text="⌨️ Atalhos de Teclado", font=("Arial", 16, "bold")).grid(row=0, column=0, pady=4, padx=8)
     
     atalhos_var = ctk.BooleanVar(value=config.get("atalhos_habilitados", True))
     atalhos_checkbox = ctk.CTkCheckBox(atalhos_frame, 
                                        text="Habilitar atalhos de teclado (Teclas 0-9)",
                                        variable=atalhos_var,
                                        font=("Arial", 12))
-    atalhos_checkbox.pack(anchor="w", padx=10, pady=8)
+    atalhos_checkbox.grid(row=1, column=0, padx=10, pady=8)
     
+    ctk.CTkButton(atalhos_frame, text="Ver atalhos", command=lambda: abrir_tela_atalhos(win)).grid(row=1, column=1, padx=10, pady=8)
+
+
     fade_frame = ctk.CTkFrame(canvas, corner_radius=12, fg_color="#1e293b")
     fade_frame.pack(pady=8, padx=10, fill="x")
     ctk.CTkLabel(fade_frame, text="🎵 Áudio (Fade)", font=("Arial", 16, "bold")).pack(anchor="w", pady=4, padx=8)
@@ -904,7 +908,7 @@ def on_key(event):
         return
 
     if event.keysym == 'space':
-        parar_tudo()
+        pausar_retomar()
     elif event.char.lower() == 'r':
         reiniciar_musica()
 
