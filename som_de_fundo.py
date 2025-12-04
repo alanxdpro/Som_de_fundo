@@ -193,14 +193,42 @@ def listar_playlists():
             playlists.append(file.replace(".json", ""))
     return playlists if playlists else ["default"]
 
-def trocar_playlist(nova_playlist):
+def trocar_playlist(nova_playlist, suprimir_mensagem=False):
     global current_playlist, config
     parar_tudo()
     current_playlist = nova_playlist
     carregar_config()
     atualizar_estilos()
     atualizar_combo_playlists()
-    messagebox.showinfo("Playlist", f"Playlist '{nova_playlist}' carregada com sucesso!")
+    if suprimir_mensagem:
+        pass
+    else:
+        messagebox.showinfo("Playlist", f"Playlist '{nova_playlist}' carregada com sucesso!")
+
+    #Esta função alterna a playlist com as setas direcionais do teclado (pra cima e pra baixo)
+def alternar_playlist(direction):
+    """
+    Alterna entre a playlist próxima (1) e anterior (0)
+    """
+    global current_playlist
+    playlists = listar_playlists()
+    indice_playlist_atual = playlists.index(current_playlist)
+
+    if direction == 0:
+        print("Voltando à playlist anterior")
+        if indice_playlist_atual == 0:
+            return
+        else:
+            print("Voltando à playlist próxima")
+            trocar_playlist(playlists[indice_playlist_atual -1], suprimir_mensagem=True)
+            return
+
+    if direction == 1:
+        if indice_playlist_atual == len(playlists)-1:
+            return
+        trocar_playlist(playlists[indice_playlist_atual + 1], suprimir_mensagem=True)
+        return
+    return
 
 def criar_nova_playlist():
     nome = simpledialog.askstring("Nova Playlist", "Digite o nome da nova playlist:")
@@ -244,6 +272,7 @@ def excluir_playlist():
         playlist_file = os.path.join(PLAYLISTS_DIR, f"{current_playlist}.json")
         if os.path.exists(playlist_file):
             os.remove(playlist_file)
+        atualizar_combo_playlists()
         trocar_playlist("default")
         messagebox.showinfo("Playlist", f"Playlist excluída com sucesso!")
 
@@ -872,12 +901,25 @@ def on_key(event):
         
         if index < len(button_refs):
             tocar_som(index)
-    elif event.keysym == 'space':
+        return
+
+    if event.keysym == 'space':
         parar_tudo()
     elif event.char.lower() == 'r':
         reiniciar_musica()
 
+def on_arrow_key(event):
+    if not config.get("atalhos_habilitados", True):
+        return
+    if event.keysym == 'Up':
+        alternar_playlist(0)
+    elif event.keysym == 'Down':
+        alternar_playlist(1)
+    
+
 app.bind("<Key>", on_key)
+app.bind("<Up>", on_arrow_key)
+app.bind("<Down>", on_arrow_key)
 
 app.protocol("WM_DELETE_WINDOW", lambda: (pygame.mixer.music.stop(), app.destroy()))
 atualizar_estilos()
