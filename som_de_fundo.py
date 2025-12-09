@@ -994,8 +994,31 @@ def reiniciar_musica():
         return
     try:
         fade_ms = 500
-        if pygame.mixer.music.get_busy():
+        busy = bool(pygame.mixer.music.get_busy())
+        if busy:
             pygame.mixer.music.fadeout(fade_ms)
+        else:
+            fade_ms = 0
+        try:
+            d = int(botao.get("duracao") or 0)
+            if d <= 0 and caminho and os.path.exists(caminho):
+                d = obter_duracao_musica(caminho)
+                botao["duracao"] = d
+                try:
+                    salvar_config()
+                except Exception:
+                    pass
+            if timer_label:
+                nome_arquivo = os.path.basename(caminho)
+                nome_musica = os.path.splitext(nome_arquivo)[0]
+                timer_label.configure(text=f" {nome_musica} | 00:00 / {formatar_tempo(d) if d>0 else '--:--'}")
+            try:
+                progressBar_musica.set(0)
+            except Exception:
+                pass
+            music_start_time = time.time()
+        except Exception:
+            pass
         def _do_restart():
             try:
                 pygame.mixer.music.stop()
@@ -1011,12 +1034,31 @@ def reiniciar_musica():
                 is_paused = False
                 pause_time = 0
                 music_start_time = time.time()
+                try:
+                    d = int(botao.get("duracao") or 0)
+                    if d <= 0:
+                        d = obter_duracao_musica(caminho)
+                        botao["duracao"] = d
+                        salvar_config()
+                    if timer_label:
+                        nome_arquivo = os.path.basename(caminho)
+                        nome_musica = os.path.splitext(nome_arquivo)[0]
+                        timer_label.configure(text=f" {nome_musica} | 00:00 / {formatar_tempo(d) if d>0 else '--:--'}")
+                    try:
+                        progressBar_musica.set(0)
+                    except Exception:
+                        pass
+                except Exception:
+                    pass
                 fade_in(0.0)
                 atualizar_timer()
                 atualizar_estilos()
             except Exception as e:
                 _show_error("Erro ao reiniciar", e)
-        app.after(fade_ms, _do_restart)
+        if fade_ms > 0:
+            app.after(fade_ms, _do_restart)
+        else:
+            _do_restart()
     except Exception as e:
         _show_error("Erro ao reiniciar", e)
     try:
