@@ -8,7 +8,7 @@ from flask import Flask, request, jsonify, send_file
 
 class RemoteControlServer:
     def __init__(self, port, get_state, play, stop, pause, switch_playlist,
-                 post_to_main, run_on_main_and_wait, set_volume=None, delta_volume=None):
+                 post_to_main, run_on_main_and_wait, set_volume=None, delta_volume=None, icons_dir=None):
         self.port = port
         self.get_state = get_state
         self.play = play
@@ -21,6 +21,7 @@ class RemoteControlServer:
         self._app = Flask(__name__)
         self._clients = {}
         self._ttl = 60
+        self.icons_dir = icons_dir or os.path.join(os.getcwd(), "icons")
         self._setup_routes()
         self._thread = None
         self.set_volume = set_volume
@@ -301,7 +302,7 @@ class RemoteControlServer:
         @self._require_pin
         def get_icon(pl, index):
             try:
-                path = os.path.join("icons", pl, f"btn{index}.jpg")
+                path = os.path.join(self.icons_dir, pl, f"btn{index}.jpg")
                 if os.path.exists(path) and os.path.isfile(path):
                     return send_file(path, mimetype='image/jpeg')
             except Exception:
@@ -312,7 +313,7 @@ class RemoteControlServer:
         @self._require_pin
         def get_default_icon():
             try:
-                path = os.path.join("icons", "sem_capa.png")
+                path = os.path.join(self.icons_dir, "sem_capa.png")
                 if os.path.exists(path) and os.path.isfile(path):
                     return send_file(path, mimetype='image/png')
             except Exception:

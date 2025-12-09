@@ -1,35 +1,32 @@
-# 🎵 Aplicativo de Som de Fundo
+# Som de Fundo — Console Profissional
 
-Console simples e leve para tocar fundos musicais em cultos e eventos, desenvolvido com Python e CustomTkinter.
+Aplicativo leve e moderno para tocar fundos musicais em cultos e eventos. Desenvolvido em Python com CustomTkinter e integração de controle remoto via navegador.
 
-🔊 **Download (32 MB) — Nova Versão:**  
-[📥 Clique para baixar](https://drive.google.com/file/d/1rO-22uEjcUjhtLAQ94sp_NV64Xvn9Jjb/view?usp=sharing)
+## Recursos
 
-## 🚀 Recursos
+- Até 20 botões por playlist, com cor, imagem e volume por card
+- Grade responsiva (5–8 colunas), tamanhos pequeno/médio/grande + ajuste fino
+- Loop individual por botão com LED discreto e indicador “Pausado” na UI
+- Barra de tempo com seek suave (pré‑fade e fade‑in) e visualização do tempo
+- Atalhos de teclado: 1–0 (1–10), Q–P (11–20), Espaço (pausar/retomar), V (reiniciar com fade)
+- Preferências globais de layout aplicadas a todas as playlists
+- Controle remoto com PIN, capas atualizadas e volume geral com feedback
+- Backup/Importar playlists com ícones e sons, seleção de conteúdo e progresso
 
-- Interface moderna e responsiva
-- 10 botões personalizáveis com cor e imagem
-- Atalhos de teclado (0–9)
-- Aparência com modos `light` e `dark`
-- Timer e barra de progresso com cálculo de duração
-- Controle remoto via navegador com PIN
+## Novidades
 
-## 🆕 Novidades (v1.1.0)
+- Loop por botão e indicador visual sincronizado
+- Linha de status com “Pausado” e “loop ativado” de forma sutil
+- Limite de arquivo de áudio ao anexar aos botões: 800 MB (formatos `.mp3`, `.wav`, `.ogg`)
+- Controle remoto serve capas diretamente do diretório de ícones e exibe volume geral
+- Configurações globais: tamanho dos cards, colunas e escala persistem para todas as playlists
 
-- Aparência simplificada: opção apenas de `light`/`dark`
-- Validação de áudio: aviso a partir de 40 MB e limite máximo 120 MB
-- Cache de duração salvo no JSON da playlist
-- Barra de progresso protegida contra divisão por zero
-- Capas reduzidas no controle remoto para melhor visualização
-- Imagens renderizadas com `CTkImage` (melhor HiDPI)
+## Pré‑requisitos
 
-## 🛠️ Pré‑requisitos
+- Python 3.10+
+- `requirements.txt`: `customtkinter`, `pillow`, `pygame`, `flask`, `qrcode`
 
-- Python 3.8+
-- Dependências em `requirements.txt`:
-  - `customtkinter`, `pillow`, `pygame`, `flask`, `qrcode`
-
-## ⚙️ Instalação
+## Instalação
 
 ```bash
 git clone https://github.com/alanxdpro/Som_de_fundo.git
@@ -37,58 +34,61 @@ cd Som_de_fundo
 pip install -r requirements.txt
 ```
 
-## ▶️ Execução
+## Execução
 
 ```bash
 python som_de_fundo.py
 ```
 
-## 🌐 Controle Remoto
+## Atalhos
 
-- Abra “Controle Remoto” no app para ver URL e PIN.
-- Acesse pelo celular/computador na mesma rede e digite o PIN.
+- 1–0 (1–10), Q–P (11–20)
+- Espaço: pausar/retomar
+- V: reiniciar com fade out rápido
+- ←/→: navegar playlists • Enter: aplicar • Esc: fechar
+- Atalhos são bloqueados ao editar textos/campos
 
-## 🎨 Aparência
+## Configurações
 
-- Em “Configurar” → “Tema”, escolha `Aparência: light` ou `Aparência: dark`.
+- Tema: claro/escuro
+- Áudio: Fade In/Out, Crossfade, Seek Fade
+- Botões: quantidade, cor, imagem, texto e som
+- Layout global: tamanho dos cards (P/M/G), colunas (5–8) e ajuste fino
 
-## 🔉 Áudio e Duração
+## Controle Remoto
 
-- Formatos suportados: `.mp3`, `.wav`, `.ogg`.
-- Arquivos acima de 40 MB mostram aviso amigável; acima de 120 MB são bloqueados.
-- A duração calculada é salva na playlist para evitar reprocessamento.
+- Acesse a URL e digite o PIN para controlar pelo navegador
+- Visualiza lista de botões com capas, estado (Tocando/Pausado/Parado) e volume geral
+- Endpoints: `/api/state`, `/api/play/<index>`, `/api/pause`, `/api/stop`, `/api/playlist`, `/api/volume`
 
-## 📦 Criando um Executável
+## Backup e Importar
+
+- Exporta playlists (JSON), ícones e sons para `.zip`
+- Importa playlists de diferentes tamanhos com ajuste de caminhos
+- Operações com barras de progresso e mensagens de status
+
+## Limites de Arquivo
+
+- Ao anexar áudio ao botão: limite máximo 800 MB
+- Aviso de desempenho para arquivos acima de ~40 MB
+
+## Criando Executável (Windows)
 
 ```bash
 pip install pyinstaller
-pyinstaller --onefile --windowed --icon=icone.ico som_de_fundo.py
+py -m PyInstaller --noconfirm --clean --onefile --windowed \
+  --name Som_de_fundo \
+  --icon "c:\\Users\\PS Mods\\Documents\\meu codigos\\App_fundo_De_Louvor\\Som_de_fundo\\icone.ico" \
+  --add-data "icons;icons" \
+  som_de_fundo.py
 ```
 
-## 🗂️ Observações de Versionamento
+Saída: `dist/Som_de_fundo.exe` (único arquivo, sem pasta). Os dados de usuário ficam em `AppData\Roaming\Som_de_fundo`.
 
-- `.gitignore` ignora dados locais (preferências, playlists de uso, cache de ícones e sons). Ajuste conforme sua necessidade.
-
-## � Publicar uma Nova Versão
-
-- Atualize a versão no app (janela Sobre) e confirme alterações com Git:
-  - `git fetch origin && git checkout -B main && git pull --rebase origin main`
-  - `git add -A`
-  - `git commit -m "Release 1.1.0: melhorias e correções"`
-  - `git push -u origin main`
-- Crie uma tag para a versão:
-  - `git tag -a v1.1.0 -m "Som_de_fundo 1.1.0"`
-  - `git push origin v1.1.0`
-- No GitHub, vá em Releases → “Draft a new release”:
-  - Tag: `v1.1.0`, Target: `main`
-  - Título: `Som de Fundo 1.1.0`
-  - Descreva as novidades e fixes
-  - Opcional: anexe o executável gerado pelo PyInstaller
-
-## �📝 Licença
+## Licença
 
 Projeto sob Licença MIT — veja [LICENSE](LICENSE).
 
----
+—
 
 Desenvolvido com ❤️ por [@allan.psxd1]
