@@ -78,7 +78,7 @@ python som_de_fundo.py
 pip install pyinstaller
 py -m PyInstaller --noconfirm --clean --onefile --windowed \
   --name Som_de_fundo \
-  --icon "c:\\Users\\PS Mods\\Documents\\meu codigos\\App_fundo_De_Louvor\\Som_de_fundo\\icone.ico" \
+  --icon "c:\\Users\\pc User\\Documents\\meu codigos\\App_fundo_De_Louvor\\Som_de_fundo\\icone.ico" \
   --add-data "icons;icons" \
   som_de_fundo.py
 ```
