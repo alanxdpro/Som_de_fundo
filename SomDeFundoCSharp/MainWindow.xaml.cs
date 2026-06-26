@@ -3465,7 +3465,9 @@ using (bucket_id = 'online-audios' and public.is_admin());
             {
                 Content = content,
                 Tag = pad,
-                IsEnabled = available,
+                IsEnabled = true,
+                IsHitTestVisible = available,
+                Focusable = available,
                 Height = 76,
                 Margin = new Thickness(4),
                 Padding = new Thickness(10),
@@ -3482,11 +3484,14 @@ using (bucket_id = 'online-audios' and public.is_admin());
                 Cursor = available ? Cursors.Hand : Cursors.Arrow
             };
 
-            button.Click += (_, _) =>
+            if (available)
             {
-                selectedPad = (PadCard)button.Tag;
-                dialog.DialogResult = true;
-            };
+                button.Click += (_, _) =>
+                {
+                    selectedPad = (PadCard)button.Tag;
+                    dialog.DialogResult = true;
+                };
+            }
 
             buttonGrid.Children.Add(button);
         }
