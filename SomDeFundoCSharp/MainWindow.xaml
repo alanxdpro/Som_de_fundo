@@ -528,13 +528,17 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Border Grid.Row="0" Background="#111722" BorderBrush="#2A3548" BorderThickness="1" CornerRadius="9" Margin="6,0,6,8" Padding="14,9">
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" MinWidth="0">
                         <Ellipse x:Name="StatusDot" Fill="#334155" Width="10" Height="10" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                        <TextBlock x:Name="StatusText" Text="Parado - Aguardando Fundo" Foreground="#D8DEE9" FontSize="14" FontWeight="SemiBold"/>
+                        <TextBlock x:Name="StatusText" Text="Parado - Aguardando Fundo" Foreground="#D8DEE9" FontSize="14" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
-                    <TextBlock x:Name="CrossfadeText" DockPanel.Dock="Right" Text="Crossfade: 3s" Foreground="#7C8497" FontFamily="Consolas" FontSize="12"/>
-                </DockPanel>
+                    <TextBlock x:Name="CrossfadeText" Grid.Column="1" Text="Crossfade: 3s" Foreground="#7C8497" FontFamily="Consolas" FontSize="12" Margin="18,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                </Grid>
             </Border>
 
             <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" CornerRadius="10" Margin="6,6,6,14" Padding="16,12">
