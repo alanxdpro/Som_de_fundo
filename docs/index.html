@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Som de Fundo Pro</title>
+  <meta name="description" content="Som de Fundo Pro: aplicativo desktop para fundos musicais, playlists, controle remoto e biblioteca online.">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #050915;
+      --panel: #101827;
+      --panel-2: #151f32;
+      --text: #f8fafc;
+      --muted: #aab6c8;
+      --blue: #2563eb;
+      --cyan: #22d3ee;
+      --green: #34d399;
+      --border: #2b3a52;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: radial-gradient(circle at 12% 0%, #12335a 0, #07111f 42%, var(--bg) 100%);
+      color: var(--text);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+    header {
+      min-height: 82vh;
+      display: grid;
+      align-items: center;
+      padding: 36px 0 48px;
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      backdrop-filter: blur(14px);
+      background: rgba(5, 9, 21, .72);
+      border-bottom: 1px solid rgba(43, 58, 82, .65);
+    }
+
+    .nav .wrap {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand img { width: 42px; height: 42px; border-radius: 10px; box-shadow: 0 0 0 1px #385172; }
+    .brand strong { font-size: 18px; white-space: nowrap; }
+    .brand span { color: #60a5fa; font-style: italic; }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+      gap: 36px;
+      align-items: center;
+      padding-top: 80px;
+    }
+
+    h1 {
+      font-size: clamp(38px, 6vw, 72px);
+      line-height: 1;
+      margin: 0 0 20px;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      color: var(--muted);
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.55;
+      max-width: 680px;
+      margin: 0 0 28px;
+    }
+
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      font-weight: 800;
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--blue), #0ea5e9);
+      border-color: #38bdf8;
+    }
+
+    .preview {
+      border: 1px solid var(--border);
+      background: linear-gradient(145deg, rgba(21,31,50,.96), rgba(8,14,26,.96));
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 28px 90px rgba(0,0,0,.36);
+    }
+
+    .appbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px;
+      background: #0b1220;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .appbar img { width: 56px; height: 56px; border-radius: 12px; }
+    .status { color: var(--green); font-weight: 900; font-size: 13px; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .pad {
+      min-height: 86px;
+      border-radius: 14px;
+      border: 1px solid #263b5f;
+      background: #111a2a;
+      padding: 14px;
+    }
+
+    .pad b { display: block; margin-bottom: 8px; }
+    .pad span { color: #8fb6ff; font-size: 13px; }
+
+    section { padding: 72px 0; border-top: 1px solid rgba(43,58,82,.6); }
+    h2 { font-size: clamp(28px, 4vw, 42px); margin: 0 0 18px; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .card {
+      background: rgba(16,24,39,.92);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      min-height: 150px;
+    }
+
+    .card h3 { margin: 0 0 10px; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.5; }
+
+    footer {
+      padding: 32px 0 42px;
+      color: var(--muted);
+      border-top: 1px solid rgba(43,58,82,.6);
+    }
+
+    @media (max-width: 820px) {
+      .hero { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: 1fr; }
+      .nav .wrap { height: 64px; }
+      .brand strong { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="wrap">
+      <a class="brand" href="#top">
+        <img src="assets/logo.png" alt="Som de Fundo Pro">
+        <strong>Som de Fundo <span>Pro</span></strong>
+      </a>
+      <a class="btn" href="https://github.com/alanxdpro/Som_de_fundo">GitHub</a>
+    </div>
+  </nav>
+
+  <header id="top">
+    <div class="wrap hero">
+      <div>
+        <h1>Som de Fundo Pro</h1>
+        <p class="lead">Console profissional para tocar fundos musicais com 20 botoes por playlist, capas, repeticao, crossfade, controle remoto pelo celular e biblioteca online.</p>
+        <div class="actions">
+          <a class="btn primary" href="https://github.com/alanxdpro/Som_de_fundo/releases">Baixar versao</a>
+          <a class="btn" href="https://github.com/alanxdpro/Som_de_fundo">Ver codigo</a>
+        </div>
+      </div>
+      <div class="preview" aria-label="Previa da interface">
+        <div class="appbar">
+          <img src="assets/logo.png" alt="">
+          <div>
+            <strong>SOM DE FUNDO PRO</strong>
+            <div class="status">CONSOLE ATIVO</div>
+          </div>
+        </div>
+        <div class="grid">
+          <div class="pad"><b>Botao 1</b><span>Tocando</span></div>
+          <div class="pad"><b>Botao 2</b><span>Pronto</span></div>
+          <div class="pad"><b>Botao 3</b><span>Loop ativo</span></div>
+          <div class="pad"><b>Botao 4</b><span>Sem audio</span></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="wrap">
+        <h2>Recursos principais</h2>
+        <div class="cards">
+          <article class="card">
+            <h3>Playlists e cards</h3>
+            <p>Organize musicas, capas, volumes e repeticao em botoes rapidos para uso ao vivo.</p>
+          </article>
+          <article class="card">
+            <h3>Controle remoto</h3>
+            <p>Controle reproducao, volume, playlists e envio de audio pelo celular na rede local.</p>
+          </article>
+          <article class="card">
+            <h3>Biblioteca online</h3>
+            <p>Baixe, vote e adicione fundos musicais da comunidade aos botoes disponiveis.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">Som de Fundo Pro. Aplicativo desktop para Windows.</div>
+  </footer>
+</body>
+</html>

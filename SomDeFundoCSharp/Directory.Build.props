@@ -1,0 +1,6 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'SomDeFundoCSharp.Admin'">
+    <BaseOutputPath>bin\Admin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>obj\Admin\</BaseIntermediateOutputPath>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,1529 @@
+<Window x:Class="SomDeFundoCSharp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Som de Fundo Pro"
+        Width="1280"
+        Height="820"
+        MinWidth="1080"
+        MinHeight="700"
+        WindowStartupLocation="CenterScreen"
+        Icon="som_de_fundo_icon.ico"
+        Background="#07090D">
+    <Window.Resources>
+        <ResourceDictionary>
+        <ResourceDictionary.MergedDictionaries>
+            <ResourceDictionary Source="Resources/Icons.xaml"/>
+        </ResourceDictionary.MergedDictionaries>
+        <SolidColorBrush x:Key="BgBrush" Color="#080B11"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#121722"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#0F141D"/>
+        <SolidColorBrush x:Key="PanelDeepBrush" Color="#090D14"/>
+        <SolidColorBrush x:Key="BorderBrushDark" Color="#253044"/>
+        <SolidColorBrush x:Key="TextBrush" Color="#F4F7FB"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#93A4B8"/>
+        <SolidColorBrush x:Key="BlueBrush" Color="#3B82F6"/>
+        <SolidColorBrush x:Key="GreenBrush" Color="#10B981"/>
+        <SolidColorBrush x:Key="RedBrush" Color="#EF1111"/>
+        <SolidColorBrush x:Key="OrangeBrush" Color="#F97316"/>
+        <SolidColorBrush x:Key="PurpleBrush" Color="#7C3AED"/>
+
+        <Style x:Key="RoundedButton" TargetType="Button">
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="Background" Value="#18202D"/>
+            <Setter Property="BorderBrush" Value="#303B4F"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#202A3B"/>
+                                <Setter TargetName="Root" Property="BorderBrush" Value="#4F8EF7"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#1D4ED8"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="Root" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Background" Value="#2563EB"/>
+            <Setter Property="BorderBrush" Value="#60A5FA"/>
+        </Style>
+
+        <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Background" Value="#EF1111"/>
+            <Setter Property="BorderBrush" Value="#F43F5E"/>
+        </Style>
+
+        <Style x:Key="OrangeButton" TargetType="Button" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Background" Value="#EA580C"/>
+            <Setter Property="BorderBrush" Value="#F97316"/>
+        </Style>
+
+        <Style x:Key="IconButton" TargetType="Button" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="#E5EEF9"/>
+            <Setter Property="Background" Value="#111827"/>
+            <Setter Property="BorderBrush" Value="#2A3548"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#60A5FA"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="LoopIconButton" TargetType="Button" BasedOn="{StaticResource IconButton}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Loop}" Value="True">
+                    <Setter Property="Foreground" Value="#60A5FA"/>
+                    <Setter Property="Background" Value="#0B2A4A"/>
+                    <Setter Property="BorderBrush" Value="#3B82F6"/>
+                </DataTrigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="#93C5FD"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="MainButtonIconBox" TargetType="Viewbox">
+            <Setter Property="Width" Value="18"/>
+            <Setter Property="Height" Value="18"/>
+            <Setter Property="Stretch" Value="Uniform"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="CardButtonIconBox" TargetType="Viewbox">
+            <Setter Property="Width" Value="17"/>
+            <Setter Property="Height" Value="17"/>
+            <Setter Property="Stretch" Value="Uniform"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ButtonIconPath" TargetType="Path">
+            <Setter Property="Fill" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+            <Setter Property="Stretch" Value="Uniform"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                    <Setter Property="Fill" Value="#60A5FA"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriticalButtonIconPath" TargetType="Path">
+            <Setter Property="Fill" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+            <Setter Property="Stretch" Value="Uniform"/>
+        </Style>
+
+        <Style x:Key="MainButtonText" TargetType="TextBlock">
+            <Setter Property="Margin" Value="6,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=Button}}" Value="True">
+                    <Setter Property="Foreground" Value="#60A5FA"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CriticalButtonText" TargetType="TextBlock">
+            <Setter Property="Margin" Value="6,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
+        </Style>
+
+        <Style x:Key="LibraryActionButton" TargetType="Button" BasedOn="{StaticResource RoundedButton}">
+            <Setter Property="Width" Value="48"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Background" Value="#101827"/>
+            <Setter Property="BorderBrush" Value="#263B5F"/>
+        </Style>
+
+        <Style x:Key="TransparentPadButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Root" Background="{TemplateBinding Background}">
+                            <ContentPresenter/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#111827"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#0B1220"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PadShell" TargetType="Border">
+            <Setter Property="Background" Value="#151B26"/>
+            <Setter Property="BorderBrush" Value="#283347"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsPlaying}" Value="True">
+                    <Setter Property="BorderBrush" Value="#34D399"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasMissingAudio}" Value="True">
+                    <Setter Property="BorderBrush" Value="#F87171"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#0D121B"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="#263041"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="CaretBrush" Value="{StaticResource TextBrush}"/>
+            <Setter Property="SelectionBrush" Value="#2563EB"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="{TemplateBinding Padding}"
+                                          Foreground="{TemplateBinding Foreground}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="#0D121B"/>
+            <Setter Property="Foreground" Value="#111827"/>
+            <Setter Property="BorderBrush" Value="#263041"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+
+        <Style TargetType="ListView">
+            <Setter Property="Background" Value="#0D121B"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="BorderBrush" Value="#263041"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+        <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="#0D121B"/>
+            <Setter Property="Foreground" Value="{StaticResource TextBrush}"/>
+            <Setter Property="Padding" Value="6"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#1D4ED8"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style TargetType="TabControl">
+            <Setter Property="Background" Value="#111620"/>
+            <Setter Property="BorderBrush" Value="#263041"/>
+        </Style>
+
+        <Style TargetType="TabItem">
+            <Setter Property="Foreground" Value="#AAB4C5"/>
+            <Setter Property="Background" Value="#0D121B"/>
+            <Setter Property="Padding" Value="16,10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="TabRoot"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="#263041"
+                                BorderThickness="1"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter ContentSource="Header"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="TabRoot" Property="Background" Value="#2563EB"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="TabRoot" Property="Background" Value="#172033"/>
+                                <Setter Property="Foreground" Value="#E5F0FF"/>
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver" Value="True"/>
+                                    <Condition Property="IsSelected" Value="True"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="TabRoot" Property="Background" Value="#2563EB"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="GridViewColumnHeader">
+            <Setter Property="Background" Value="#111B2A"/>
+            <Setter Property="Foreground" Value="#C8D2E3"/>
+            <Setter Property="BorderBrush" Value="#263041"/>
+            <Setter Property="BorderThickness" Value="0,0,1,1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+
+    <Grid Background="{StaticResource BgBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" CornerRadius="10" Margin="14,14,14,7" Padding="16,14">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center" Width="292">
+                    <Border Width="48" Height="48" CornerRadius="10" Background="#0B0F16" BorderBrush="#2E3A50" BorderThickness="1" Margin="0,0,12,0" ClipToBounds="True">
+                        <Image Source="ICONE SOM DE FUNDO.png" Stretch="Uniform" Margin="4" RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Border>
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="SOM DE FUNDO" Foreground="{StaticResource TextBrush}" FontSize="20" FontWeight="Bold"/>
+                            <TextBlock Text=" PRO" Foreground="#60A5FA" FontSize="18" FontStyle="Italic" Margin="6,1,0,0"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                            <Ellipse Fill="#10B981" Width="8" Height="8" Margin="0,0,7,0"/>
+                            <TextBlock Text="CONSOLE ATIVO" Foreground="#10B981" FontSize="11" FontWeight="Bold"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <Button DockPanel.Dock="Right" Style="{StaticResource RoundedButton}" Click="AboutButton_Click" Width="86" Margin="14,0,0,0" Padding="8,8">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Viewbox Style="{StaticResource MainButtonIconBox}">
+                            <Path Data="{StaticResource IconInfo}" Style="{StaticResource ButtonIconPath}"/>
+                        </Viewbox>
+                        <TextBlock Text="Sobre" Style="{StaticResource MainButtonText}"/>
+                    </StackPanel>
+                </Button>
+
+                <Border Background="#090D14" BorderBrush="#2A3548" BorderThickness="1" CornerRadius="8" Padding="12,8" VerticalAlignment="Center">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="MODO - STANDBY" Foreground="#60A5FA" FontSize="11" FontWeight="Bold"/>
+                        <TextBlock x:Name="NowPlayingText" Grid.Column="1" Text="Nenhum som ativo" Foreground="{StaticResource TextBrush}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                        <TextBlock x:Name="TimeText" Grid.Column="2" Text="00:00 / 00:00" Foreground="#8B95A7" FontSize="11" FontFamily="Consolas" HorizontalAlignment="Right"/>
+                        <ProgressBar x:Name="PlaybackProgress"
+                                     Grid.Row="1"
+                                     Grid.ColumnSpan="3"
+                                     Height="7"
+                                     Minimum="0"
+                                     Maximum="100"
+                                     Value="0"
+                                     Margin="0,8,0,0"
+                                      Foreground="#3B82F6"
+                                      Background="#18202D"
+                                      BorderBrush="#18202D"
+                                     Cursor="Hand"
+                                     ToolTip="Clique para avancar ou voltar no tempo"
+                                     MouseLeftButtonDown="PlaybackProgress_MouseLeftButtonDown"/>
+                    </Grid>
+                </Border>
+            </DockPanel>
+        </Border>
+
+        <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" CornerRadius="10" Margin="14,7" Padding="16">
+            <DockPanel LastChildFill="False">
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left" VerticalAlignment="Center">
+                    <Border Background="#090D14" BorderBrush="#2A3548" BorderThickness="1" CornerRadius="7" Padding="12,8" Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="PLAYLIST:" Foreground="#8B95A7" FontSize="12" FontWeight="Bold" Margin="0,0,8,0"/>
+                            <ComboBox x:Name="PlaylistSelector"
+                                      Width="190"
+                                      Height="32"
+                                      FontSize="12"
+                                      FontWeight="Bold"
+                                      Padding="8,3"
+                                      VerticalContentAlignment="Center"
+                                      SelectionChanged="PlaylistSelector_SelectionChanged"/>
+                            <TextBlock x:Name="PlaylistNameText" Text="Default" Visibility="Collapsed"/>
+                        </StackPanel>
+                    </Border>
+                    <Button Style="{StaticResource RoundedButton}" Click="NewPlaylist_Click" Margin="0,0,8,0" Padding="10,8">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                <Path Data="{StaticResource IconAdd}" Style="{StaticResource ButtonIconPath}"/>
+                            </Viewbox>
+                            <TextBlock Text="Nova" Style="{StaticResource MainButtonText}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource RoundedButton}" Click="DuplicatePlaylist_Click" Margin="0,0,8,0" Padding="10,8">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                <Path Data="{StaticResource IconCopy}" Style="{StaticResource ButtonIconPath}"/>
+                            </Viewbox>
+                            <TextBlock Text="Duplicar" Style="{StaticResource MainButtonText}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource RoundedButton}" Foreground="#F87171" Click="DeletePlaylist_Click" Margin="0,0,8,0" Padding="10,8">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                <Path Data="{StaticResource IconDelete}" Style="{StaticResource CriticalButtonIconPath}"/>
+                            </Viewbox>
+                            <TextBlock Text="Excluir" Style="{StaticResource CriticalButtonText}"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource RoundedButton}" Click="EditPlaylist_Click" Padding="10,8">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                <Path Data="{StaticResource IconEdit}" Style="{StaticResource ButtonIconPath}"/>
+                            </Viewbox>
+                            <TextBlock Text="Editar" Style="{StaticResource MainButtonText}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+
+                <Border DockPanel.Dock="Right" Background="#090D14" BorderBrush="#2A3548" BorderThickness="1" CornerRadius="8" Padding="12,8" Width="410">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="52"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                            <Viewbox Width="18" Height="18" Stretch="Uniform" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconVolume}" Fill="#C8D2E3" Stretch="Uniform"/>
+                            </Viewbox>
+                            <TextBlock Text="VOLUME GERAL:" Foreground="#C8D2E3" FontSize="11" FontWeight="Bold" VerticalAlignment="Center" Margin="7,0,0,0"/>
+                        </StackPanel>
+                        <Slider x:Name="MasterVolumeSlider" Grid.Column="1" Minimum="0" Maximum="100" Value="80" ValueChanged="MasterVolumeSlider_ValueChanged" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="MasterVolumeText" Grid.Column="2" Text="80%" Foreground="#60A5FA" FontSize="12" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+                </Border>
+            </DockPanel>
+        </Border>
+
+        <ScrollViewer Grid.Row="2" Margin="6,0" VerticalScrollBarVisibility="Auto">
+            <ItemsControl x:Name="PadsList">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="{Binding GridColumns, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Style="{StaticResource PadShell}" Margin="9" Height="{Binding DataContext.PadHeight, RelativeSource={RelativeSource AncestorType=Window}}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="5"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="40"/>
+                                </Grid.RowDefinitions>
+
+                                <Border Grid.Row="0" Background="{Binding ColorBrush}" CornerRadius="8,8,0,0"/>
+
+                                <Button Grid.Row="1" Style="{StaticResource TransparentPadButton}" Click="Pad_Click" Tag="{Binding}">
+                                    <Grid Margin="12,10,12,8">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <TextBlock Text="{Binding NumberLabel}" Foreground="#94A3B8" FontFamily="Consolas" FontSize="12" FontWeight="Bold"/>
+                                        <TextBlock Text="{Binding VolumeLabel}" Foreground="#3B82F6" FontFamily="Consolas" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right"/>
+                                        <Border Grid.Row="1" Width="58" Height="58" Background="#0A0F17" BorderBrush="#2A3548" BorderThickness="1" CornerRadius="8" HorizontalAlignment="Center" VerticalAlignment="Center" ClipToBounds="True">
+                                            <Image Source="{Binding CoverImageSource}" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                        </Border>
+                                        <TextBlock Grid.Row="2" Text="{Binding Name}" Foreground="{StaticResource TextBrush}" FontSize="13" FontWeight="Bold" TextAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Grid.Row="3" Text="{Binding AudioStatusText}" Foreground="{Binding AudioStatusBrush}" FontSize="10" FontWeight="SemiBold" TextAlignment="Center" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                    </Grid>
+                                </Button>
+
+                                <Grid Grid.Row="2" Background="#121A27">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="34"/>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="32"/>
+                                        <ColumnDefinition Width="32"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="V" Foreground="#64748B" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Slider Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Volume, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0,0,7,0"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding LoopLabel}" Foreground="#64748B" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="3" Style="{StaticResource IconButton}" ToolTip="Configurar" Click="OpenPadEditor_Click" Tag="{Binding}">
+                                        <Viewbox Style="{StaticResource CardButtonIconBox}">
+                                            <Path Data="{StaticResource IconSettings}" Style="{StaticResource ButtonIconPath}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button Grid.Column="4" Style="{StaticResource IconButton}" ToolTip="Recursos de IA" Click="OpenPadAi_Click" Tag="{Binding}">
+                                        <Viewbox Style="{StaticResource CardButtonIconBox}">
+                                            <Path Data="{StaticResource IconWand}" Style="{StaticResource ButtonIconPath}"/>
+                                        </Viewbox>
+                                    </Button>
+                                    <Button Grid.Column="5" Style="{StaticResource LoopIconButton}" ToolTip="Repetição" Click="LoopPad_Click" Tag="{Binding}">
+                                        <Viewbox Style="{StaticResource CardButtonIconBox}">
+                                            <Path Data="{StaticResource IconRepeat}" Style="{StaticResource ButtonIconPath}"/>
+                                        </Viewbox>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Background="#111722" BorderBrush="#2A3548" BorderThickness="1" CornerRadius="9" Margin="6,0,6,8" Padding="14,9">
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <Ellipse x:Name="StatusDot" Fill="#334155" Width="10" Height="10" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBlock x:Name="StatusText" Text="Parado - Aguardando Fundo" Foreground="#D8DEE9" FontSize="14" FontWeight="SemiBold"/>
+                    </StackPanel>
+                    <TextBlock x:Name="CrossfadeText" DockPanel.Dock="Right" Text="Crossfade: 3s" Foreground="#7C8497" FontFamily="Consolas" FontSize="12"/>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Row="1" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrushDark}" BorderThickness="1" CornerRadius="10" Margin="6,6,6,14" Padding="16,12">
+                <DockPanel LastChildFill="False">
+                    <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Button Style="{StaticResource DangerButton}" Click="StopButton_Click" Width="86" Height="40" Margin="0,0,8,0" Padding="7,8">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                    <Path Data="{StaticResource IconStop}" Style="{StaticResource CriticalButtonIconPath}"/>
+                                </Viewbox>
+                                <TextBlock Text="Parar" Style="{StaticResource CriticalButtonText}" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource OrangeButton}" Click="PauseResume_Click" Width="124" Height="40" Padding="7,8" FontSize="11">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                    <Path Data="{StaticResource IconPause}" Style="{StaticResource ButtonIconPath}"/>
+                                </Viewbox>
+                                <TextBlock Text="Pausar/Retomar" Style="{StaticResource MainButtonText}" Margin="4,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <Border DockPanel.Dock="Right" Background="#090D14" BorderBrush="#2A3548" BorderThickness="1" CornerRadius="9" Padding="12,10" Width="190">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="ATALHOS DO TECLADO" Foreground="#7C8497" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                            <TextBlock Grid.Row="1" Text="ESPACO   PAUSAR" Foreground="#9CA3AF" FontFamily="Consolas" FontSize="11"/>
+                            <TextBlock Grid.Row="2" Text="1-0      PLAY 1-10" Foreground="#3B82F6" FontFamily="Consolas" FontSize="11"/>
+                            <TextBlock Grid.Row="3" Text="ESC      PARAR TUDO" Foreground="#F87171" FontFamily="Consolas" FontSize="11"/>
+                        </Grid>
+                    </Border>
+
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,14,0">
+                        <Button Style="{StaticResource RoundedButton}" Click="OpenSettings_Click" Width="118" Height="40" Margin="0,0,8,0" Padding="7,8" FontSize="11">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                    <Path Data="{StaticResource IconSettings}" Style="{StaticResource ButtonIconPath}"/>
+                                </Viewbox>
+                                <TextBlock Text="Configurar" Style="{StaticResource MainButtonText}" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource RoundedButton}" Click="OpenSoundsFolder_Click" Width="138" Height="40" Margin="0,0,8,0" Padding="7,8" FontSize="11">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                    <Path Data="{StaticResource IconFolder}" Style="{StaticResource ButtonIconPath}"/>
+                                </Viewbox>
+                                <TextBlock Text="Abrir Pasta Sons" Style="{StaticResource MainButtonText}" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource PrimaryButton}" Click="OpenLibrary_Click" Width="148" Height="40" Margin="0,0,8,0" Padding="7,8" FontSize="11">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                    <Path Data="{StaticResource IconCloud}" Style="{StaticResource ButtonIconPath}"/>
+                                </Viewbox>
+                                <TextBlock Text="Biblioteca Online" Style="{StaticResource MainButtonText}" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="EqualizerButton" Style="{StaticResource RoundedButton}" Click="OpenEqualizer_Click" Width="118" Height="40" Margin="0,0,8,0" Padding="7,8" FontSize="11">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                    <Path Data="{StaticResource IconEqualizer}" Style="{StaticResource ButtonIconPath}"/>
+                                </Viewbox>
+                                <TextBlock Text="Equalizador" Style="{StaticResource MainButtonText}" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="RemoteButton" Style="{StaticResource RoundedButton}" Click="RemoteButton_Click" Width="128" Height="40" Padding="7,8" FontSize="11">
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Viewbox Style="{StaticResource MainButtonIconBox}">
+                                    <Path Data="{StaticResource IconRemote}" Style="{StaticResource ButtonIconPath}"/>
+                                </Viewbox>
+                                <TextBlock Text="Controle Remoto" Style="{StaticResource MainButtonText}" Margin="5,0,0,0"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </Grid>
+
+        <Border x:Name="ModalShade" Grid.RowSpan="4" Background="#CC020409" Visibility="Collapsed"/>
+
+        <Border x:Name="AboutOverlay" Grid.RowSpan="4" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="460" Background="#151A23" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="10" Padding="22">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Content="X" Style="{StaticResource IconButton}" Click="CloseAbout_Click"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="46" Height="46" Background="#0B0F16" BorderBrush="#2E3A50" BorderThickness="1" CornerRadius="9" Margin="0,0,12,0" ClipToBounds="True">
+                            <Image Source="ICONE SOM DE FUNDO.png" Stretch="Uniform" Margin="4" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Border>
+                        <StackPanel>
+                            <TextBlock Text="Som de Fundo Pro" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="Bold"/>
+                            <TextBlock Text="Console desktop para sons, playlists e biblioteca online." Foreground="#AAB4C5" FontSize="12"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DockPanel>
+                <Border Grid.Row="1" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,16">
+                    <StackPanel>
+                        <TextBlock Text="Projeto" Foreground="#60A5FA" FontWeight="Bold" Margin="0,0,0,8"/>
+                        <TextBlock Text="App WPF em C# com player NAudio, equalizador, IA local e biblioteca online da comunidade." Foreground="#D1D5DB" TextWrapping="Wrap"/>
+                        <TextBlock Text="Criador" Foreground="#60A5FA" FontWeight="Bold" Margin="0,14,0,6"/>
+                        <TextBlock Text="Instagram: alan.psxd1" Foreground="#D1D5DB"/>
+                        <TextBlock Text="Grupo WhatsApp: comunidade do Som de Fundo Pro" Foreground="#D1D5DB" Margin="0,6,0,0"/>
+                    </StackPanel>
+                </Border>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Instagram" Style="{StaticResource RoundedButton}" Width="105" Margin="0,0,8,0" Click="OpenInstagram_Click"/>
+                    <Button Content="Grupo WhatsApp" Style="{StaticResource PrimaryButton}" Width="140" Margin="0,0,8,0" Click="OpenWhatsappGroup_Click"/>
+                    <Button Content="Fechar" Style="{StaticResource RoundedButton}" Width="90" Click="CloseAbout_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border x:Name="EditorOverlay" Grid.RowSpan="4" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="760" MaxHeight="720" Background="#151A23" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="10" Padding="24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Content="X" Style="{StaticResource IconButton}" Click="CloseEditor_Click"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="40" Height="40" CornerRadius="8" Background="#1D4ED8" Margin="0,0,12,0">
+                            <Viewbox Width="22" Height="22" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Path Data="{StaticResource IconSettings}" Fill="#E5EEF9" Stretch="Uniform"/>
+                            </Viewbox>
+                        </Border>
+                        <StackPanel>
+                            <TextBlock x:Name="EditorTitleText" Text="Configuracao do botao" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="Bold"/>
+                            <TextBlock Text="Edite audio, imagem e volume do atalho de som" Foreground="#8B95A7" FontSize="12"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DockPanel>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,0,8,0">
+                        <TextBlock Text="IDENTIFICADOR DO CARD" Foreground="#AAB4C5" FontSize="12" FontWeight="Bold" Margin="0,0,0,8"/>
+                        <TextBox x:Name="EditorNameBox" Margin="0,0,0,16"/>
+
+                        <StackPanel Margin="0,0,0,16">
+                            <TextBlock Text="COR DE DESTAQUE" Foreground="#AAB4C5" FontSize="12" FontWeight="Bold" Margin="0,0,0,8"/>
+                            <UniformGrid Columns="8" Rows="2">
+                                <Button Background="#2563EB" Tag="#2563EB" Click="ColorSwatch_Click" Height="34" Margin="3" Style="{StaticResource RoundedButton}"/>
+                                <Button Background="#7C3AED" Tag="#7C3AED" Click="ColorSwatch_Click" Height="34" Margin="3" Style="{StaticResource RoundedButton}"/>
+                                <Button Background="#0891B2" Tag="#0891B2" Click="ColorSwatch_Click" Height="34" Margin="3" Style="{StaticResource RoundedButton}"/>
+                                <Button Background="#059669" Tag="#059669" Click="ColorSwatch_Click" Height="34" Margin="3" Style="{StaticResource RoundedButton}"/>
+                                <Button Background="#E11D48" Tag="#E11D48" Click="ColorSwatch_Click" Height="34" Margin="3" Style="{StaticResource RoundedButton}"/>
+                                <Button Background="#EA580C" Tag="#EA580C" Click="ColorSwatch_Click" Height="34" Margin="3" Style="{StaticResource RoundedButton}"/>
+                                <Button Background="#DB2777" Tag="#DB2777" Click="ColorSwatch_Click" Height="34" Margin="3" Style="{StaticResource RoundedButton}"/>
+                                <Button Background="#475569" Tag="#475569" Click="ColorSwatch_Click" Height="34" Margin="3" Style="{StaticResource RoundedButton}"/>
+                            </UniformGrid>
+                        </StackPanel>
+
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="14"/>
+                                <ColumnDefinition Width="210"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <DockPanel>
+                                        <TextBlock Text="SOM CORRESPONDENTE" Foreground="#C8D2E3" FontSize="12" FontWeight="Bold"/>
+                                        <TextBlock DockPanel.Dock="Right" Text="Max 800 MB (.mp3, .wav, .ogg)" Foreground="#64748B" FontSize="11"/>
+                                    </DockPanel>
+                                    <Button Grid.Row="1" Content="Selecionar arquivo de audio" Style="{StaticResource RoundedButton}" Click="SelectEditorSound_Click" Margin="0,12,0,8" Height="44"/>
+                                    <TextBlock x:Name="EditorSoundText" Grid.Row="2" Text="Nenhum arquivo selecionado" Foreground="#8B95A7" FontSize="12" TextWrapping="Wrap"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="2" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="CAPA" Foreground="#C8D2E3" FontSize="12" FontWeight="Bold" Margin="0,0,0,10"/>
+                                    <Grid Grid.Row="1">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="72"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <Border Background="#111827" BorderBrush="#263041" BorderThickness="1" CornerRadius="7" Height="62" Width="62" ClipToBounds="True">
+                                                <Image x:Name="EditorCoverImage" Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality"/>
+                                            </Border>
+                                            <TextBlock x:Name="EditorCoverText" Text="Capa padrao" Foreground="#64748B" FontSize="10" TextAlignment="Center" TextWrapping="Wrap" Margin="0,6,0,0"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <Button Content="Alterar" Style="{StaticResource RoundedButton}" Click="SelectEditorCover_Click"/>
+                                            <Button Content="Remover" Style="{StaticResource RoundedButton}" Click="RemoveEditorCover_Click" Margin="0,8,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Grid>
+                            </Border>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="14"/>
+                                <ColumnDefinition Width="210"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14">
+                                <StackPanel>
+                                    <TextBlock Text="VOLUME CARD" Foreground="#AAB4C5" FontSize="12" FontWeight="Bold" Margin="0,0,0,10"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="46"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Slider x:Name="EditorVolumeSlider" Minimum="0" Maximum="100" ValueChanged="EditorVolumeSlider_ValueChanged"/>
+                                        <TextBlock x:Name="EditorVolumeText" Grid.Column="1" Text="100%" Foreground="#8B5CF6" FontFamily="Consolas" FontWeight="Bold" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Button x:Name="EditorLoopButton" Grid.Column="2" Content="LOOP CONTINUO" Style="{StaticResource RoundedButton}" Click="EditorLoop_Click" Height="74" Background="#063C35" BorderBrush="#0F766E" Foreground="#5EEAD4"/>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                    <Button Content="Cancelar" Style="{StaticResource RoundedButton}" Click="CloseEditor_Click" Width="110" Margin="0,0,10,0"/>
+                    <Button Content="Aplicar Ajustes" Style="{StaticResource PrimaryButton}" Click="ApplyEditor_Click" Width="150"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border x:Name="AiOverlay" Grid.RowSpan="4" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="760" MaxHeight="720" Background="#151A23" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="10" Padding="24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Content="X" Style="{StaticResource IconButton}" Click="CloseAi_Click"/>
+                    <StackPanel>
+                        <TextBlock Text="Remover Vocal / Separar Audio com IA" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="O processamento e feito localmente no computador." Foreground="#FBBF24" FontSize="12" Margin="0,5,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="0,0,8,0">
+                        <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,14">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="110"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="Musica" Foreground="#8B95A7" FontWeight="Bold"/>
+                                <TextBlock x:Name="AiSongNameText" Grid.Column="1" Text="-" Foreground="{StaticResource TextBrush}" TextWrapping="Wrap"/>
+                                <TextBlock Grid.Row="1" Text="Duracao" Foreground="#8B95A7" FontWeight="Bold" Margin="0,8,0,0"/>
+                                <TextBlock x:Name="AiDurationText" Grid.Row="1" Grid.Column="1" Text="-" Foreground="{StaticResource TextBrush}" Margin="0,8,0,0"/>
+                                <TextBlock Grid.Row="2" Text="Botao" Foreground="#8B95A7" FontWeight="Bold" Margin="0,8,0,0"/>
+                                <TextBlock x:Name="AiPadText" Grid.Row="2" Grid.Column="1" Text="-" Foreground="{StaticResource TextBrush}" Margin="0,8,0,0"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="OPCOES" Foreground="#AAB4C5" FontSize="12" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <RadioButton x:Name="AiInstrumentalOption" GroupName="AiMode" Content="Instrumental - Remove a voz e mantem apenas o fundo musical." IsChecked="True" Foreground="{StaticResource TextBrush}" Margin="0,0,0,8"/>
+                                <RadioButton x:Name="AiVocalOption" GroupName="AiMode" Content="Vocal isolado - Extrai apenas a voz." Foreground="{StaticResource TextBrush}" Margin="0,0,0,8"/>
+                                <RadioButton x:Name="AiOriginalOption" GroupName="AiMode" Content="Manter original - Usa o audio sem alteracao." Foreground="{StaticResource TextBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,14">
+                            <StackPanel>
+                                <DockPanel Margin="0,0,0,10">
+                                    <TextBlock Text="PROCESSAMENTO LOCAL" Foreground="#AAB4C5" FontSize="12" FontWeight="Bold"/>
+                                    <TextBlock DockPanel.Dock="Right" Text="Computadores fracos podem demorar." Foreground="#FBBF24" FontSize="11"/>
+                                </DockPanel>
+                                <Grid>
+                                    <ProgressBar x:Name="AiProgressBar" Height="9" Minimum="0" Maximum="100" Value="0" Foreground="#F97316" Background="#1F2937" BorderBrush="#1F2937"/>
+                                    <TextBlock x:Name="AiProgressPercentText" Text="0%" Foreground="#FBBF24" FontFamily="Consolas" FontSize="11" FontWeight="Bold" HorizontalAlignment="Right" Margin="0,-18,0,0"/>
+                                </Grid>
+                                <TextBlock x:Name="AiStatusText" Text="Aguardando processamento." Foreground="#8B95A7" FontSize="12" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+                                    <Button x:Name="AiInstallHelpButton" Content="Como instalar IA local" Style="{StaticResource RoundedButton}" Click="OpenAiInstallHelp_Click" Width="160" Margin="0,0,8,0"/>
+                                    <Button x:Name="AiCancelButton" Content="Cancelar" Style="{StaticResource RoundedButton}" Click="CancelAi_Click" Width="100" Margin="0,0,8,0" IsEnabled="False"/>
+                                    <Button x:Name="AiStartButton" Content="Iniciar processamento" Style="{StaticResource PrimaryButton}" Click="StartAi_Click" Width="170"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14">
+                            <StackPanel>
+                                <TextBlock Text="VERSOES DISPONIVEIS" Foreground="#AAB4C5" FontSize="12" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Original" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="AiOriginalPathText" Grid.Column="1" Text="-" Foreground="#8B95A7" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                    <Button Grid.Column="2" Content="Play preview" Style="{StaticResource RoundedButton}" Click="PreviewOriginal_Click" Margin="4,0"/>
+                                    <Button Grid.Column="3" Content="Usar no botao" Style="{StaticResource RoundedButton}" Click="UseOriginal_Click" Margin="4,0"/>
+                                    <Button Grid.Column="4" Content="Abrir pasta" Style="{StaticResource RoundedButton}" Click="OpenOriginalFolder_Click" Margin="4,0"/>
+                                </Grid>
+                                <Grid Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Instrumental" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="AiInstrumentalPathText" Grid.Column="1" Text="-" Foreground="#8B95A7" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                    <Button x:Name="PreviewInstrumentalButton" Grid.Column="2" Content="Play preview" Style="{StaticResource RoundedButton}" Click="PreviewInstrumental_Click" Margin="4,0"/>
+                                    <Button x:Name="UseInstrumentalButton" Grid.Column="3" Content="Usar no botao" Style="{StaticResource RoundedButton}" Click="UseInstrumental_Click" Margin="4,0"/>
+                                    <Button x:Name="OpenInstrumentalFolderButton" Grid.Column="4" Content="Abrir pasta" Style="{StaticResource RoundedButton}" Click="OpenInstrumentalFolder_Click" Margin="4,0"/>
+                                    <Button x:Name="RemoveInstrumentalButton" Grid.Column="5" Content="Remover arquivo gerado" Style="{StaticResource DangerButton}" Click="RemoveInstrumental_Click" Margin="4,0"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="110"/>
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Vocal isolado" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="AiVocalPathText" Grid.Column="1" Text="-" Foreground="#8B95A7" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+                                    <Button x:Name="PreviewVocalButton" Grid.Column="2" Content="Play preview" Style="{StaticResource RoundedButton}" Click="PreviewVocal_Click" Margin="4,0"/>
+                                    <Button x:Name="UseVocalButton" Grid.Column="3" Content="Usar no botao" Style="{StaticResource RoundedButton}" Click="UseVocal_Click" Margin="4,0"/>
+                                    <Button x:Name="OpenVocalFolderButton" Grid.Column="4" Content="Abrir pasta" Style="{StaticResource RoundedButton}" Click="OpenVocalFolder_Click" Margin="4,0"/>
+                                    <Button x:Name="RemoveVocalButton" Grid.Column="5" Content="Remover arquivo gerado" Style="{StaticResource DangerButton}" Click="RemoveVocal_Click" Margin="4,0"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                    <Button Content="Fechar" Style="{StaticResource RoundedButton}" Click="CloseAi_Click" Width="110"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border x:Name="EqualizerOverlay" Grid.RowSpan="4" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="600" Background="#151A23" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="10" Padding="22">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="22" ShadowDepth="0" Opacity="0.35" Color="#000000"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Content="X" Style="{StaticResource IconButton}" Click="CloseEqualizer_Click"/>
+                    <StackPanel>
+                        <TextBlock Text="Equalizador de Audio" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="Bold"/>
+                        <CheckBox x:Name="EqEnabledCheck" Content="Ativar equalizador" Foreground="{StaticResource TextBrush}" Margin="0,10,0,0" Checked="EqEnabledCheck_Changed" Unchecked="EqEnabledCheck_Changed"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock Text="GRAVE" Foreground="#C8D2E3" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="EqBassText" Text="0 dB" Foreground="#3B82F6" FontFamily="Consolas" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,8,0,8"/>
+                        <Slider x:Name="EqBassSlider" Orientation="Vertical" Minimum="-12" Maximum="12" Height="170" TickFrequency="1" ValueChanged="EqSlider_ValueChanged"/>
+                        <TextBlock Text="100 Hz" Foreground="#8B95A7" FontSize="11" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                        <TextBlock Text="MEDIO" Foreground="#C8D2E3" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="EqMidText" Text="0 dB" Foreground="#3B82F6" FontFamily="Consolas" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,8,0,8"/>
+                        <Slider x:Name="EqMidSlider" Orientation="Vertical" Minimum="-12" Maximum="12" Height="170" TickFrequency="1" ValueChanged="EqSlider_ValueChanged"/>
+                        <TextBlock Text="1000 Hz" Foreground="#8B95A7" FontSize="11" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                        <TextBlock Text="AGUDO" Foreground="#C8D2E3" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="EqTrebleText" Text="0 dB" Foreground="#3B82F6" FontFamily="Consolas" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,8,0,8"/>
+                        <Slider x:Name="EqTrebleSlider" Orientation="Vertical" Minimum="-12" Maximum="12" Height="170" TickFrequency="1" ValueChanged="EqSlider_ValueChanged"/>
+                        <TextBlock Text="8000 Hz" Foreground="#8B95A7" FontSize="11" HorizontalAlignment="Center" Margin="0,8,0,0"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="3" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="PRESETS" Foreground="#AAB4C5" FontSize="12" FontWeight="Bold" Margin="0,0,0,10"/>
+                            <Button Content="Padrao" Style="{StaticResource RoundedButton}" Click="EqPreset_Click" Tag="padrao" Margin="0,0,0,8"/>
+                            <Button Content="Mais grave" Style="{StaticResource RoundedButton}" Click="EqPreset_Click" Tag="mais_grave" Margin="0,0,0,8"/>
+                            <Button Content="Voz clara" Style="{StaticResource RoundedButton}" Click="EqPreset_Click" Tag="voz_clara" Margin="0,0,0,8"/>
+                            <Button Content="Suave" Style="{StaticResource RoundedButton}" Click="EqPreset_Click" Tag="suave" Margin="0,0,0,8"/>
+                            <Button Content="Ambiente" Style="{StaticResource RoundedButton}" Click="EqPreset_Click" Tag="ambiente"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,22,0,0">
+                    <Button Content="Resetar" Style="{StaticResource RoundedButton}" Click="ResetEqualizer_Click" Width="100" Margin="0,0,10,0"/>
+                    <Button Content="Aplicar" Style="{StaticResource PrimaryButton}" Click="ApplyEqualizer_Click" Width="100" Margin="0,0,10,0"/>
+                    <Button Content="Fechar" Style="{StaticResource RoundedButton}" Click="CloseEqualizer_Click" Width="100"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border x:Name="RemoteOverlay" Grid.RowSpan="4" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="680" Background="#151A23" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="10" Padding="24">
+            <Border.Effect>
+                <DropShadowEffect BlurRadius="22" ShadowDepth="0" Opacity="0.35" Color="#000000"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Content="X" Style="{StaticResource IconButton}" Click="CloseRemote_Click"/>
+                    <StackPanel>
+                        <TextBlock Text="Controle Remoto" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="Acesse pelo celular conectado na mesma rede Wi-Fi" Foreground="#8B95A7" FontSize="12" Margin="0,6,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <Border Grid.Row="1" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                    <StackPanel HorizontalAlignment="Center">
+                        <TextBlock x:Name="RemoteUrlText" Text="http://127.0.0.1:5005" Foreground="{StaticResource TextBrush}" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                        <TextBlock x:Name="RemotePinText" Text="PIN: 1234" Foreground="#BFDBFE" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,14,0,0"/>
+                        <TextBlock x:Name="RemoteStatusText" Text="Servidor desligado  -  Conectados: 0" Foreground="#AAB4C5" FontSize="13" HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                    </StackPanel>
+                </Border>
+
+                <UniformGrid Grid.Row="2" Rows="2" Columns="3" HorizontalAlignment="Center" Width="520" Margin="0,0,0,16">
+                    <Button Content="Abrir no Navegador" Style="{StaticResource PrimaryButton}" Click="OpenRemoteBrowser_Click" Height="38" Margin="0,0,8,8"/>
+                    <Button Content="Copiar URL" Style="{StaticResource RoundedButton}" Click="CopyRemoteUrl_Click" Height="38" Margin="0,0,8,8"/>
+                    <Button Content="Trocar PIN" Style="{StaticResource OrangeButton}" Click="ChangeRemotePin_Click" Height="38" Margin="0,0,0,8"/>
+                    <Button Content="Ligar Servidor" Style="{StaticResource RoundedButton}" Click="StartRemoteServer_Click" Height="38" Margin="0,0,8,0"/>
+                    <Button Content="Desligar" Style="{StaticResource DangerButton}" Click="StopRemoteServer_Click" Height="38" Margin="0,0,8,0"/>
+                    <Border/>
+                </UniformGrid>
+
+                <Border Grid.Row="3" Background="#FFFFFF" CornerRadius="4" Padding="12" HorizontalAlignment="Center">
+                    <Image x:Name="RemoteQrImage" Width="230" Height="230" Stretch="Uniform"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <Border x:Name="SettingsOverlay" Grid.RowSpan="4" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="660" MaxHeight="720" Background="#151A23" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="10" Padding="24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Content="X" Style="{StaticResource IconButton}" Click="CloseSettings_Click"/>
+                    <StackPanel>
+                        <TextBlock Text="Painel de Configuracoes" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="Bold"/>
+                        <TextBlock Text="Personalize o console profissional e o controle remoto" Foreground="#8B95A7" FontSize="12"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <ScrollViewer Grid.Row="1"
+                              VerticalScrollBarVisibility="Auto"
+                              HorizontalScrollBarVisibility="Disabled"
+                              CanContentScroll="True"
+                              Margin="0,0,0,18">
+                    <Grid Margin="0,0,8,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Border Grid.Row="0" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="LAYOUT E APARENCIA" Foreground="#38BDF8" FontSize="13" FontWeight="Bold" Margin="0,0,0,14"/>
+                                <Grid Grid.Row="1">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Tamanho dos Cards" Foreground="#C8D2E3" FontSize="12" Margin="0,0,0,8"/>
+                                        <UniformGrid Columns="3">
+                                            <Button Content="Pequeno" Style="{StaticResource RoundedButton}" Click="CardSize_Click" Tag="Small" Margin="0,0,6,0"/>
+                                            <Button Content="Medio" Style="{StaticResource PrimaryButton}" Click="CardSize_Click" Tag="Medium" Margin="0,0,6,0"/>
+                                            <Button Content="Grande" Style="{StaticResource RoundedButton}" Click="CardSize_Click" Tag="Large"/>
+                                        </UniformGrid>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock x:Name="ColumnsLabel" Text="Colunas da Grade (5 colunas)" Foreground="#C8D2E3" FontSize="12" Margin="0,0,0,8"/>
+                                        <Slider x:Name="ColumnsSlider" Minimum="5" Maximum="8" Value="5" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="ColumnsSlider_ValueChanged"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Grid.Row="2" Margin="0,18,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock x:Name="ScaleLabel" Text="Ajuste de Escala Visual (100%)" Foreground="#C8D2E3" FontSize="12" Margin="0,0,0,8"/>
+                                        <Slider x:Name="ScaleSlider" Minimum="80" Maximum="120" Value="100" TickFrequency="10" IsSnapToTickEnabled="True" ValueChanged="ScaleSlider_ValueChanged"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock x:Name="CrossfadeLabel" Text="Duracao do Crossfade (3s)" Foreground="#C8D2E3" FontSize="12" Margin="0,0,0,8"/>
+                                        <Slider x:Name="CrossfadeSlider" Minimum="1" Maximum="10" Value="3" TickFrequency="1" IsSnapToTickEnabled="True" ValueChanged="CrossfadeSlider_ValueChanged"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="1" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="SEGURANCA DO CONTROLE REMOTO" Foreground="#34D399" FontSize="13" FontWeight="Bold" Margin="0,0,0,12"/>
+                                    <TextBlock Text="Codigo PIN (minimo 4 caracteres)" Foreground="#C8D2E3" FontSize="12" Margin="0,0,0,8"/>
+                                    <TextBox x:Name="PinBox" Text="1234"/>
+                                </StackPanel>
+                                <TextBlock Grid.Column="2" Text="O PIN sera usado na janela do navegador do dispositivo movel para conectar ao servidor e comandar a reproducao de audio de forma segura." Foreground="#8B95A7" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="2" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="BACKUP / IMPORTACAO DE PLAYLISTS" Foreground="#C084FC" FontSize="13" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <CheckBox x:Name="ExportPadsCheck" Content="Tabelas de Playlists (Botoes e Sons)" IsChecked="True" Foreground="{StaticResource TextBrush}" Margin="0,0,0,6"/>
+                                <CheckBox x:Name="ExportSettingsCheck" Content="Ajustes Globais e Senha PIN" IsChecked="True" Foreground="{StaticResource TextBrush}" Margin="0,0,0,14"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Content="Exportar Backup (.JSON)" Style="{StaticResource RoundedButton}" Click="ExportBackup_Click"/>
+                                    <Button Grid.Column="2" Content="Importar JSON" Style="{StaticResource RoundedButton}" Click="ImportBackup_Click"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Grid.Row="3" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Text="BIBLIOTECA ONLINE" Foreground="#22D3EE" FontSize="13" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <TextBlock Grid.Row="1" Text="Conexao definida internamente no aplicativo. Usuarios nao precisam alterar configuracoes tecnicas pela tela." Foreground="#AAB4C5" TextWrapping="Wrap"/>
+                                <Grid Grid.Row="2" Margin="0,12,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="12"/>
+                                        <ColumnDefinition Width="150"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Status" Foreground="#C8D2E3" FontSize="12" Margin="0,0,0,6"/>
+                                        <TextBlock x:Name="SupabaseInternalStatusText" Text="Biblioteca online aguardando configuracao interna." Foreground="#FBBF24" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="2" Content="Testar conexao" Style="{StaticResource RoundedButton}" Click="TestSupabase_Click" Height="38" VerticalAlignment="Bottom"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="4" Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,20">
+                            <StackPanel>
+                                <TextBlock Text="SUPORTE E PRIMEIROS PASSOS" Foreground="#60A5FA" FontSize="13" FontWeight="Bold" Margin="0,0,0,12"/>
+                                <TextBlock Text="Acesse o tutorial, backups automaticos, verificacao de atualizacao e diagnostico para suporte." Foreground="#AAB4C5" TextWrapping="Wrap" Margin="0,0,0,14"/>
+                                <UniformGrid Columns="2" Rows="2">
+                                    <Button Content="Tutorial / Primeiro uso" Style="{StaticResource RoundedButton}" Click="OpenFirstRun_Click" Margin="0,0,8,8"/>
+                                    <Button Content="Abrir backups automaticos" Style="{StaticResource RoundedButton}" Click="OpenAutomaticBackups_Click" Margin="0,0,0,8"/>
+                                    <Button Content="Verificar atualizacao" Style="{StaticResource RoundedButton}" Click="CheckUpdates_Click" Margin="0,0,8,0"/>
+                                    <Button Content="Exportar diagnostico" Style="{StaticResource PrimaryButton}" Click="ExportDiagnostics_Click"/>
+                                </UniformGrid>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Cancelar" Style="{StaticResource RoundedButton}" Click="CloseSettings_Click" Width="100" Margin="0,0,10,0"/>
+                    <Button Content="Salvar Alteracoes" Style="{StaticResource PrimaryButton}" Click="SaveSettings_Click" Width="150"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border x:Name="FirstRunOverlay" Grid.RowSpan="4" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="720" MaxHeight="720" Background="#151A23" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="10" Padding="24">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="0,0,0,18">
+                    <Button DockPanel.Dock="Right" Content="X" Style="{StaticResource IconButton}" Click="CloseFirstRun_Click"/>
+                    <StackPanel>
+                        <TextBlock Text="Primeiros passos" Foreground="{StaticResource TextBrush}" FontSize="24" FontWeight="Bold"/>
+                        <TextBlock Text="Configure o essencial e veja onde adicionar suas musicas." Foreground="#8B95A7" FontSize="12"/>
+                    </StackPanel>
+                </DockPanel>
+
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,18">
+                    <StackPanel Margin="0,0,8,0">
+                        <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Como usar" Foreground="#38BDF8" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <TextBlock Text="1. Clique na engrenagem de um botao para configurar audio, nome, cor, capa, volume e loop." Foreground="#C8D2E3" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                                <TextBlock Text="2. Use Selecionar arquivo de audio para adicionar uma musica ao botao." Foreground="#C8D2E3" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                                <TextBlock Text="3. Crie ou alterne playlists no topo. Cada playlist tem seus proprios 20 botoes." Foreground="#C8D2E3" TextWrapping="Wrap" Margin="0,0,0,6"/>
+                                <TextBlock Text="4. O controle remoto abre no celular pela mesma rede Wi-Fi usando o PIN." Foreground="#C8D2E3" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,0,14">
+                            <StackPanel>
+                                <TextBlock Text="Pasta de sons" Foreground="#34D399" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+                                <TextBlock Text="O app guarda copias seguras dos audios na pasta interna gerenciada pelo Som de Fundo Pro." Foreground="#AAB4C5" TextWrapping="Wrap" Margin="0,0,0,12"/>
+                                <Button Content="Abrir pasta de sons" Style="{StaticResource RoundedButton}" Click="OpenSoundsFolder_Click" Height="38" Width="180" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="18"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Volume padrao" Foreground="#C8D2E3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                    <Slider x:Name="FirstRunVolumeSlider" Minimum="0" Maximum="100" Value="80" TickFrequency="5"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Playlist inicial" Foreground="#C8D2E3" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                    <TextBox x:Name="FirstRunPlaylistBox" Text="Default" Height="38"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <Button Content="Abrir depois" Style="{StaticResource RoundedButton}" Click="CloseFirstRun_Click" Width="110" Margin="0,0,10,0"/>
+                    <Button Content="Concluir" Style="{StaticResource PrimaryButton}" Click="CompleteFirstRun_Click" Width="120"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border x:Name="LibraryOverlay" Grid.RowSpan="4" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center" Width="1160" Height="720" Background="#0B1220" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="10">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <DockPanel Grid.Row="0" Margin="18,16,18,10">
+                    <Button DockPanel.Dock="Right" Content="X" Style="{StaticResource IconButton}" Click="CloseLibrary_Click"/>
+                    <Border DockPanel.Dock="Right" Background="#111B2A" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="8" Padding="14,9" Margin="0,0,16,0" Width="300">
+                        <StackPanel>
+                            <TextBlock Text="Status: Online" Foreground="#86EFAC" FontWeight="Bold" FontSize="12"/>
+                            <TextBlock x:Name="CommunityStorageText" Text="Comunidade 0 - Modo Usuario" Foreground="#AAB4C5" FontSize="11" Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Width="46" Height="46" Background="#1D4ED8" CornerRadius="8" Margin="0,0,14,0">
+                            <TextBlock Text="♪" Foreground="White" FontSize="28" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="BIBLIOTECA ONLINE" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="Bold"/>
+                                <Border Background="#2563EB" CornerRadius="4" Padding="7,2" Margin="10,3,0,0">
+                                    <TextBlock Text="COMPARTILHADO" Foreground="#EFF6FF" FontSize="10" FontWeight="Bold"/>
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="Musicas enviadas pela comunidade para votacao" Foreground="#CBD5E1" FontSize="12" Margin="0,3,0,0"/>
+                            <TextBlock x:Name="LibraryStatusText" Text="Status: Biblioteca Online" Foreground="#FBBF24" FontSize="11" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DockPanel>
+
+                <Grid Grid.Row="1" Margin="16,0,16,0" Background="#111620">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="380"/>
+                        <ColumnDefinition Width="300"/>
+                    </Grid.ColumnDefinitions>
+                    <TabControl x:Name="LibraryTabs" Grid.ColumnSpan="3" Margin="0" Padding="0" SelectionChanged="LibraryTabs_SelectionChanged">
+                        <TabItem x:Name="CommunityRankingTab" Header="Mais Votadas">
+                            <Grid/>
+                        </TabItem>
+                        <TabItem x:Name="CommunityUploadTab" Header="Enviar para Comunidade">
+                            <Grid/>
+                        </TabItem>
+                        <TabItem x:Name="AdminSuggestionsTab" Header="Admin - Sugestoes">
+                            <Grid/>
+                        </TabItem>
+                        <TabItem x:Name="AdminCleanupTab" Header="Admin - Limpeza">
+                            <Grid/>
+                        </TabItem>
+                        <TabItem x:Name="SupabaseSqlTab" Header="Configuracao Interna">
+                            <Grid/>
+                        </TabItem>
+                    </TabControl>
+                    <TextBox x:Name="LibrarySearchBox" Grid.Column="1" Height="36" Margin="0,9,12,9" TextChanged="LibrarySearchBox_TextChanged"/>
+                    <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,9,0,9">
+                        <Button x:Name="OpenCommunityFolderButton" Content="Pasta Downloads" Style="{StaticResource RoundedButton}" Height="36" Width="138" Margin="0,0,8,0" Click="OpenCommunityDownloadsFolder_Click"/>
+                        <Button x:Name="SqlConfigButton" Content="Config. Interna" Style="{StaticResource RoundedButton}" Height="36" Width="138" Click="OpenSqlTab_Click"/>
+                    </StackPanel>
+                </Grid>
+
+                <Grid Grid.Row="2" Margin="16,12,16,18">
+                    <Grid x:Name="TopLibraryPanel" Visibility="Visible">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ListView x:Name="TopAudiosList" BorderBrush="#1E3A5F" Background="#0B1220">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="#" Width="42">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding Rank}" Foreground="#E2E8F0" VerticalAlignment="Center"/>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Titulo" Width="260">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Button Content="Play" Tag="{Binding}" Style="{StaticResource LibraryActionButton}" Click="PreviewOnline_Click" Width="54" Margin="0,0,10,0"/>
+                                                    <TextBlock Text="{Binding Name}" Foreground="White" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Artista (Enviado por)" Width="230">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding Artist}" Foreground="#E2E8F0"/>
+                                                    <TextBlock Text="{Binding UploadedByLabel}" Foreground="#60A5FA" FontSize="11"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Duracao" DisplayMemberBinding="{Binding DurationLabel}" Width="82"/>
+                                    <GridViewColumn Header="Votos" DisplayMemberBinding="{Binding Votes}" Width="68"/>
+                                    <GridViewColumn Header="Status" Width="128">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{Binding StatusBrush}" CornerRadius="10" Padding="9,4" HorizontalAlignment="Left">
+                                                    <TextBlock Text="{Binding DownloadStatus}" Foreground="#D1FAE5" FontSize="11" FontWeight="SemiBold"/>
+                                                </Border>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                    <GridViewColumn Header="Acoes" Width="260">
+                                        <GridViewColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Content="Prev" Tag="{Binding}" Style="{StaticResource LibraryActionButton}" Click="PreviewOnline_Click" Margin="0,0,6,0"/>
+                                                    <Button Content="Baix" Tag="{Binding}" Style="{StaticResource LibraryActionButton}" Click="DownloadOnline_Click" Margin="0,0,6,0"/>
+                                                    <Button Content="Votar" Tag="{Binding}" Style="{StaticResource LibraryActionButton}" Click="LikeAudio_Click" Width="58" Margin="0,0,6,0"/>
+                                                    <Button Content="Adicionar" ToolTip="Adicionar ao botao" Tag="{Binding}" Style="{StaticResource LibraryActionButton}" Click="UseOnline_Click" Width="82"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </GridViewColumn.CellTemplate>
+                                    </GridViewColumn>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <Grid Grid.Row="1" Margin="0,14,0,0">
+                            <TextBlock Text="Selecione uma musica ou use os botoes da linha." Foreground="#8B95A7" VerticalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="Previa" Style="{StaticResource RoundedButton}" Click="PreviewOnline_Click" Width="140" Margin="0,0,10,0"/>
+                                <Button Content="Votar" Style="{StaticResource PrimaryButton}" Click="LikeAudio_Click" Width="130" Margin="0,0,10,0"/>
+                                <Button Content="Baixar" Style="{StaticResource RoundedButton}" Click="DownloadOnline_Click" Width="120" Margin="0,0,10,0"/>
+                                <Button Content="Adicionar ao botao" Style="{StaticResource PrimaryButton}" Click="UseOnline_Click" Width="170" Margin="0,0,10,0"/>
+                                <Button Content="Anterior" Style="{StaticResource RoundedButton}" Click="PreviousCommunityPage_Click" Width="110" Margin="0,0,10,0"/>
+                                <Button Content="Proxima" Style="{StaticResource RoundedButton}" Click="NextCommunityPage_Click" Width="110"/>
+                            </StackPanel>
+                        </Grid>
+                    </Grid>
+
+                    <Grid x:Name="VotingLibraryPanel" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Border Background="#0D1B2E" BorderBrush="#1D4ED8" BorderThickness="1" CornerRadius="7" Padding="14" Margin="0,0,0,12">
+                            <TextBlock x:Name="AdminStatusText" Text="Area administrativa: cadastre seu User ID em admin_users para liberar as acoes." Foreground="#AAB4C5" TextWrapping="Wrap"/>
+                        </Border>
+                        <ListView x:Name="VotingAudiosList" Grid.Row="1">
+                            <ListView.View>
+                                <GridView>
+                                    <GridViewColumn Header="Titulo" DisplayMemberBinding="{Binding Name}" Width="210"/>
+                                    <GridViewColumn Header="Artista / Enviado por" DisplayMemberBinding="{Binding ArtistUploaderLabel}" Width="210"/>
+                                    <GridViewColumn Header="Duracao" DisplayMemberBinding="{Binding DurationLabel}" Width="90"/>
+                                    <GridViewColumn Header="Tamanho" DisplayMemberBinding="{Binding SizeLabel}" Width="90"/>
+                                    <GridViewColumn Header="Votos" DisplayMemberBinding="{Binding Votes}" Width="70"/>
+                                    <GridViewColumn Header="Downloads" DisplayMemberBinding="{Binding Downloads}" Width="80"/>
+                                    <GridViewColumn Header="Status" DisplayMemberBinding="{Binding ApprovalLabel}" Width="90"/>
+                                </GridView>
+                            </ListView.View>
+                        </ListView>
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+                            <Button Content="Baixar" Style="{StaticResource RoundedButton}" Click="DownloadOnline_Click" Width="90" Margin="0,0,8,0"/>
+                            <Button Content="Adicionar Biblioteca" Style="{StaticResource RoundedButton}" Click="DownloadOnline_Click" Width="150" Margin="0,0,8,0"/>
+                            <Button Content="Adicionar ao botao" Style="{StaticResource PrimaryButton}" Click="UseOnline_Click" Width="150" Margin="0,0,8,0"/>
+                            <Button Content="Aprovar" Style="{StaticResource PrimaryButton}" Click="ApproveCommunityMusic_Click" Width="90" Margin="0,0,8,0"/>
+                            <Button Content="Excluir" Style="{StaticResource DangerButton}" Click="DeleteCommunityMusic_Click" Width="90" Margin="0,0,8,0"/>
+                            <Button Content="Ant" Style="{StaticResource RoundedButton}" Click="PreviousAdminPage_Click" Width="58" Margin="0,0,8,0"/>
+                            <Button Content="Prox" Style="{StaticResource RoundedButton}" Click="NextAdminPage_Click" Width="58"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid x:Name="UploadLibraryPanel" Visibility="Collapsed">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="280"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="#111B2A" BorderBrush="#2F3A4D" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,0,18,0">
+                                <StackPanel>
+                                    <Border Width="42" Height="42" HorizontalAlignment="Left" Background="#2563EB" CornerRadius="8" Margin="0,0,0,14">
+                                        <TextBlock Text=">" Foreground="White" FontSize="24" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <TextBlock Text="Enviar musica para comunidade" Foreground="{StaticResource TextBrush}" FontSize="16" FontWeight="Bold" Margin="0,0,0,12"/>
+                                    <TextBlock Text="Sua musica fica disponivel para a comunidade ouvir, votar e baixar." Foreground="#AAB4C5" TextWrapping="Wrap" Margin="0,0,0,18"/>
+                                    <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="7" Padding="12">
+                                        <StackPanel>
+                                            <TextBlock Text="Regras para envio" Foreground="#60A5FA" FontWeight="Bold" Margin="0,0,0,8"/>
+                                            <TextBlock Text="- Arquivos: MP3, WAV ou M4A" Foreground="#AAB4C5" Margin="0,0,0,5"/>
+                                            <TextBlock Text="- Tamanho maximo: 60 MB" Foreground="#AAB4C5" Margin="0,0,0,5"/>
+                                            <TextBlock Text="- Duracao maxima: 2 horas" Foreground="#AAB4C5"/>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Border>
+                            <Grid Grid.Column="1">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Titulo da musica" Foreground="#AAB4C5" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="UploadNameBox" Text="Meu som"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Artista" Foreground="#AAB4C5" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="UploadArtistBox" Text="Comunidade"/>
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Grid.Row="1" Margin="0,12,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Enviado por" Foreground="#AAB4C5" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                        <TextBox x:Name="UploadSenderBox"/>
+                                        <TextBlock Text="Este nome aparece para a comunidade." Foreground="#8B95A7" FontSize="11" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Arquivo de audio" Foreground="#AAB4C5" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="120"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox x:Name="UploadFileText" IsReadOnly="True"/>
+                                            <Button Grid.Column="1" Content="Selecionar" Style="{StaticResource RoundedButton}" Click="SelectCommunityUploadFile_Click" Margin="8,0,0,0"/>
+                                        </Grid>
+                                        <TextBlock Text="Formatos: MP3, WAV, M4A - max 60 MB - max 2 horas" Foreground="#8B95A7" FontSize="11" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                </Grid>
+                                <StackPanel Grid.Row="2" Margin="0,12,0,0">
+                                    <TextBlock Text="Observacao (opcional)" Foreground="#AAB4C5" FontWeight="SemiBold" Margin="0,0,0,6"/>
+                                    <TextBox x:Name="UploadNoteBox" Height="70" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,14,0,0">
+                                    <Button Content="Limpar formulario" Style="{StaticResource RoundedButton}" Click="ClearCommunityUpload_Click" Width="150" Margin="0,0,10,0"/>
+                                    <Button Content="Enviar para Votacao" Style="{StaticResource PrimaryButton}" Click="UploadAudio_Click" Width="210" Height="42"/>
+                                </StackPanel>
+                                <TextBlock Grid.Row="5" x:Name="UploadStatusText" Foreground="#8B95A7" Margin="0,12,0,0" TextWrapping="Wrap"/>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid x:Name="AdminCleanupPanel" Visibility="Collapsed">
+                        <StackPanel Width="620" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <TextBlock Text="Administrador - Limpeza Automatica" Foreground="{StaticResource TextBrush}" FontSize="22" FontWeight="Bold" Margin="0,0,0,14"/>
+                            <Border Background="#0D121B" BorderBrush="#263041" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,14">
+                                <StackPanel>
+                                    <TextBlock x:Name="CommunityUserIdText" Text="User ID: -" Foreground="#BFDBFE" FontFamily="Consolas" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="AdminStorageText" Text="Uso: -" Foreground="#86EFAC" FontWeight="SemiBold" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                                    <TextBlock x:Name="CleanupStatusText" Text="A limpeza roda quando um admin abre esta area." Foreground="#AAB4C5" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <Button Content="Copiar User ID" Style="{StaticResource RoundedButton}" Click="CopyCommunityUserId_Click" Width="120" Margin="0,0,8,0"/>
+                                <Button Content="Rodar Limpeza" Style="{StaticResource PrimaryButton}" Click="RunCommunityCleanup_Click" Width="130"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid x:Name="SqlLibraryPanel" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,10">
+                            <Button Content="Copiar SQL" Style="{StaticResource RoundedButton}" Click="CopySupabaseSql_Click" Width="110" Margin="0,0,8,0"/>
+                            <Button Content="Testar conexao" Style="{StaticResource PrimaryButton}" Click="TestSupabase_Click" Width="130"/>
+                        </StackPanel>
+                        <TextBox x:Name="SupabaseSqlBox"
+                                 Grid.Row="1"
+                                 IsReadOnly="True"
+                                 TextWrapping="Wrap"
+                                 VerticalScrollBarVisibility="Auto"
+                                 FontFamily="Consolas"
+                                 FontSize="13"
+                                 Background="#0D121B"
+                                 Foreground="#D1D5DB"
+                                 BorderBrush="#263041"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

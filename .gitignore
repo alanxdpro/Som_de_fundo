@@ -1,55 +1,46 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
+# Build output
+bin/
+obj/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+publish-user/
+publish-admin/
+installer-output/
 
-# Virtual Environment
-venv/
-ENV/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Arquivos de configuração local
+# Local secrets and runtime configuration
+.env
+.env.*
+!.env.example
 config.json
 app_prefs.json
 
-# Dados locais do app (playlists)
-playlists/*.json
+# User and IDE files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.swp
+*.swo
 
-# Cache de ícones por playlist (gerado automaticamente)
-icons/*/*.jpg
-
-# Logs e arquivos de sistema
+# Logs and diagnostics
 *.log
+logs/
+
+# Generated installers and binaries
+*.exe
+*.dll
+*.pdb
+*.zip
+*.msi
+*.nupkg
+
+# OS files
 Thumbs.db
 Desktop.ini
 
-# Executáveis
-*.ex
-*.spec
+# Legacy Python/build artifacts
+__pycache__/
+*.py[cod]
 build/
-dist/
-
-# Pasta de áudios (opcional, remova se quiser versionar os áudios)
+downloads/
 sons/
