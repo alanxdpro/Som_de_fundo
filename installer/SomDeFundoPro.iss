@@ -1,5 +1,5 @@
 #define MyAppName "Som de Fundo Pro"
-#define MyAppVersion "1.0.0"
+#define MyAppVersion "2.0.0"
 #define MyAppPublisher "Som de Fundo Pro"
 #define MyAppExeName "Som de Fundo Pro.exe"
 
